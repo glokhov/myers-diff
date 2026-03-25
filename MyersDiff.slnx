@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="MyersDiff.Tests/MyersDiff.Tests.csproj" />
+  <Project Path="MyersDiff/MyersDiff.csproj" />
+</Solution>
