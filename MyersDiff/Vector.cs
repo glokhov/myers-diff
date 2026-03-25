@@ -1,12 +1,12 @@
 ﻿namespace MyersDiff;
 
-internal class Vector<T>(int length)
+internal sealed class Vector<T>(int max)
 {
-    private readonly T[] _vector = new T[length * 2 + 1];
+    private readonly T[] _items = new T[max * 2 + 1];
 
     public T this[int i]
     {
-        get => _vector[i + length];
-        set => _vector[i + length] = value;
+        get => _items[i + max];
+        set => _items[i + max] = value;
     }
 }

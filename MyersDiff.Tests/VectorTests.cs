@@ -1,6 +1,6 @@
 ﻿namespace MyersDiff.Tests;
 
-public class VectorTests
+public sealed class VectorTests
 {
     [Fact]
     public void VectorTest()
