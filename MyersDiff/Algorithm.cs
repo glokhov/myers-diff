@@ -1,15 +1,15 @@
 namespace MyersDiff;
 
-internal static class Algorithm
+public static class Algorithm
 {
-    public static int LcsSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b)
+    public static void LcsSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer, Trace trace)
     {
         var n = a.Length;
         var m = b.Length;
 
         var max = n + m;
 
-        var v = new Vector<int>(max);
+        var v = new Vector(max);
 
         for (var d = 0; d <= max; d++)
         {
@@ -28,7 +28,7 @@ internal static class Algorithm
 
                 var y = x - k;
 
-                while (x < n && y < m && EqualityComparer<T>.Default.Equals(a[x], b[y]))
+                while (x < n && y < m && comparer.Equals(a[x], b[y]))
                 {
                     x++;
                     y++;
@@ -38,9 +38,11 @@ internal static class Algorithm
 
                 if (x >= n && y >= m)
                 {
-                    return d;
+                    return;
                 }
             }
+
+            trace.AddPath(v, d);
         }
 
         throw new InvalidOperationException("Unexpected end of algorithm.");

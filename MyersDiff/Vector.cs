@@ -1,12 +1,25 @@
 ﻿namespace MyersDiff;
 
-internal sealed class Vector<T>(int max)
+public sealed class Vector(int max)
 {
-    private readonly T[] _items = new T[max * 2 + 1];
+    private readonly int[] _v = new int[max * 2 + 1];
 
-    public T this[int i]
+    public int this[int k]
     {
-        get => _items[i + max];
-        set => _items[i + max] = value;
+        get => _v[k + max];
+        set => _v[k + max] = value;
+    }
+
+    public (int X, int Y)[] Points(int d)
+    {
+        var i = 0;
+        var p = new (int X, int Y)[d + 1];
+
+        for (var k = -d; k <= d; k += 2)
+        {
+            p[i++] = (this[k], this[k] - k);
+        }
+
+        return p;
     }
 }
