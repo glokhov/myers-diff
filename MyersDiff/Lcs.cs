@@ -5,16 +5,10 @@
 /// </summary>
 /// <param name="a">Source sequence</param>
 /// <typeparam name="T">Type of elements</typeparam>
-public sealed class Lcs<T>(IReadOnlyList<T> a) : Tracer
+public sealed class Lcs<T>(IReadOnlyList<T> a, List<Vector> path) : Trace(path, new Configuration { ReturnEqual = true })
 {
-    protected override bool ReturnDelete => false;
-
-    protected override bool ReturnInsert => false;
-
-    protected override bool ReturnEqual => true;
-
-    public T[] Build()
+    public T[] Build(int n, int m)
     {
-        return Enumerate(N, M).Select(item => a[item.X - 1]).ToArray();
+        return Enumerate(n, m).Select(item => a[item.X - 1]).ToArray();
     }
 }

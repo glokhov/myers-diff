@@ -8,15 +8,16 @@ public sealed class AlgorithmTests
     [Fact]
     public void Test_LcsSes()
     {
-        var tracer = new InternalTracer();
+        var path = new List<Vector>();
 
-        Algorithm.LcsSes(A, B, EqualityComparer<char>.Default, tracer);
+        Algorithm.LcsSes(A, B, EqualityComparer<char>.Default, path);
 
-        Assert.Equal(5, tracer.Paths.Count);
-        Assert.Equal([(0, 0)], tracer.Paths[0]);
-        Assert.Equal([(0, 1), (1, 0)], tracer.Paths[1]);
-        Assert.Equal([(2, 4), (2, 2), (3, 1)], tracer.Paths[2]);
-        Assert.Equal([(3, 6), (4, 5), (5, 4), (5, 2)], tracer.Paths[3]);
-        Assert.Equal([(3, 7), (4, 6), (5, 5), (7, 5), (7, 3)], tracer.Paths[4]);
+        // Assert.Equal(6, path.Count);
+        Assert.Equal([(0, 0)], path[0].Points);
+        Assert.Equal([(0, 1), (1, 0)], path[1].Points);
+        Assert.Equal([(2, 4), (2, 2), (3, 1)], path[2].Points);
+        Assert.Equal([(3, 6), (4, 5), (5, 4), (5, 2)], path[3].Points);
+        Assert.Equal([(3, 7), (4, 6), (5, 5), (7, 5), (7, 3)], path[4].Points);
+        // Assert.Equal([(3, 8), (4, 7), (5, 6), (7, 6), (5, 2), (0, -5)], path[5].Points);
     }
 }

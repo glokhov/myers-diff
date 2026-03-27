@@ -10,16 +10,26 @@ public sealed class Vector(int max)
         set => _v[k + max] = value;
     }
 
-    public (int X, int Y)[] Points(int d)
+    public IEnumerable<(int X, int Y)> Points
     {
-        var i = 0;
-        var p = new (int X, int Y)[d + 1];
+        get
+        {
+            for (var k = -max; k <= max; k += 2)
+            {
+                yield return (this[k], this[k] - k);
+            }
+        }
+    }
+
+    public Vector Clone(int d)
+    {
+        var v = new Vector(d);
 
         for (var k = -d; k <= d; k += 2)
         {
-            p[i++] = (this[k], this[k] - k);
+            v[k] = this[k];
         }
 
-        return p;
+        return v;
     }
 }

@@ -9,12 +9,12 @@ public sealed class LcsTests
     [Fact]
     public void Test_Build()
     {
-        var lcs = new Lcs<char>(A.ToCharArray());
+        var path = new List<Vector>();
 
-        Algorithm.LcsSes(A, B, EqualityComparer<char>.Default, lcs);
+        Algorithm.LcsSes(A, B, EqualityComparer<char>.Default, path);
 
-        var subsequence = lcs.Build();
+        var lcs = new Lcs<char>(A.ToCharArray(), path).Build(A.Length, B.Length);
 
-        Assert.Equal(S.ToCharArray(), subsequence);
+        Assert.Equal(S.ToCharArray(), lcs);
     }
 }

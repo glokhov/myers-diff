@@ -5,16 +5,10 @@
 /// </summary>
 /// <param name="b">Target sequence</param>
 /// <typeparam name="T">Type of elements</typeparam>
-public sealed class Ses<T>(IReadOnlyList<T> b) : Tracer
+public sealed class Ses<T>(IReadOnlyList<T> b, List<Vector> path) : Trace(path, new Configuration { ReturnDelete = true, ReturnInsert = true })
 {
-    protected override bool ReturnDelete => true;
-
-    protected override bool ReturnInsert => true;
-
-    protected override bool ReturnEqual => false;
-
-    public (int X, Cmd Cmd, T Ins)[] Build()
+    public (int X, Cmd Cmd, T Ins)[] Build(int n, int m)
     {
-        return Enumerate(N, M).Select(item => (item.X, item.Cmd, item.Cmd is Cmd.Ins ? b[item.Y - 1] : default!)).ToArray();
+        return Enumerate(n, m).Select(item => (item.X, item.Cmd, item.Cmd is Cmd.Ins ? b[item.Y - 1] : default!)).ToArray();
     }
 }

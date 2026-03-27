@@ -1,4 +1,6 @@
-﻿namespace MyersDiff.Tests;
+﻿using static MyersDiff.Cmd;
+
+namespace MyersDiff.Tests;
 
 public sealed class SesTests
 {
@@ -8,12 +10,12 @@ public sealed class SesTests
     [Fact]
     public void Test_Build()
     {
-        var ses = new Ses<char>(B.ToCharArray());
+        var path = new List<Vector>();
 
-        Algorithm.LcsSes(A, B, EqualityComparer<char>.Default, ses);
+        Algorithm.LcsSes(A, B, EqualityComparer<char>.Default, path);
 
-        var script = ses.Build();
+        var ses = new Ses<char>(B.ToCharArray(), path).Build(A.Length, B.Length);
 
-        Assert.Equal([(1, Cmd.Del, '\0'), (2, Cmd.Del, '\0'), (3, Cmd.Ins, 'b'), (6, Cmd.Del, '\0'), (7, Cmd.Ins, 'c')], script);
+        Assert.Equal([(1, Del, '\0'), (2, Del, '\0'), (3, Ins, 'b'), (6, Del, '\0'), (7, Ins, 'c')], ses);
     }
 }
