@@ -7,13 +7,13 @@ public sealed class LcsTests
     private const string S = "caba";
 
     [Fact]
-    public void Test_Subsequence()
+    public void Test_Build()
     {
         var lcs = new Lcs<char>(A.ToCharArray());
 
         Algorithm.LcsSes(A, B, EqualityComparer<char>.Default, lcs);
 
-        var subsequence = lcs.Subsequence();
+        var subsequence = lcs.Build();
 
         Assert.Equal(S.ToCharArray(), subsequence);
     }

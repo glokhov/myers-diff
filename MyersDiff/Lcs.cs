@@ -7,8 +7,14 @@
 /// <typeparam name="T">Type of elements</typeparam>
 public sealed class Lcs<T>(IReadOnlyList<T> a) : Tracer
 {
-    public T[] Subsequence()
+    protected override bool ReturnDelete => false;
+
+    protected override bool ReturnInsert => false;
+
+    protected override bool ReturnEqual => true;
+
+    public T[] Build()
     {
-        return Enumerate(N, M).Select(t => a[t.X - 1]).ToArray();
+        return Enumerate(N, M).Select(item => a[item.X - 1]).ToArray();
     }
 }

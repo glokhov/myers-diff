@@ -8,7 +8,7 @@ public sealed class TracerTests
     [Fact]
     public void Test_Trace()
     {
-        var tracer = new Tracer();
+        var tracer = Tracer.Default;
 
         Algorithm.LcsSes(A, B, EqualityComparer<char>.Default, tracer);
 
