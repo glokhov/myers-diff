@@ -2,10 +2,13 @@ namespace MyersDiff;
 
 public static class Algorithm
 {
-    public static void LcsSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer, Trace trace)
+    public static void LcsSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer, Tracer tracer)
     {
         var n = a.Length;
         var m = b.Length;
+
+        tracer.N = n;
+        tracer.M = m;
 
         var max = n + m;
 
@@ -42,7 +45,7 @@ public static class Algorithm
                 }
             }
 
-            trace.AddPath(v, d);
+            tracer.AddPath(v, d);
         }
 
         throw new InvalidOperationException("Unexpected end of algorithm.");

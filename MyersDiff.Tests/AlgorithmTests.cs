@@ -5,7 +5,7 @@ public sealed class AlgorithmTests
     private const string A = "abcabba";
     private const string B = "cbabac";
 
-    private sealed class TestTrace : Trace
+    private sealed class TestTracer : Tracer
     {
         public IReadOnlyList<(int X, int Y)[]> GetPaths() => Paths;
     }
@@ -13,13 +13,13 @@ public sealed class AlgorithmTests
     [Fact]
     public void Test_LcsSes()
     {
-        var trace = new TestTrace();
+        var tracer = new TestTracer();
 
-        Algorithm.LcsSes(A, B, EqualityComparer<char>.Default, trace);
+        Algorithm.LcsSes(A, B, EqualityComparer<char>.Default, tracer);
 
-        Assert.Equal(5, trace.Length);
+        Assert.Equal(5, tracer.Length);
 
-        var paths = trace.GetPaths();
+        var paths = tracer.GetPaths();
 
         Assert.Equal([(0, 0)], paths[0]);
         Assert.Equal([(0, 1), (1, 0)], paths[1]);
