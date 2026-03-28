@@ -42,7 +42,7 @@ public static class Algorithm
                 }
             }
 
-            path.Add(v.Clone(d));
+            path.Add(v.Copy(d));
         }
 
         throw new InvalidOperationException("Unexpected end of algorithm.");

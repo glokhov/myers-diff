@@ -21,14 +21,11 @@ public sealed class Vector(int max)
         }
     }
 
-    public Vector Clone(int d)
+    public Vector Copy(int d)
     {
         var v = new Vector(d);
 
-        for (var k = -d; k <= d; k += 2)
-        {
-            v[k] = this[k];
-        }
+        Array.Copy(_v, -d + max, v._v, 0, v._v.Length);
 
         return v;
     }
