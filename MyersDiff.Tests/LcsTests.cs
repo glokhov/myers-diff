@@ -9,7 +9,7 @@ public sealed class LcsTests
     [Fact]
     public void Test_Build()
     {
-        var path = new List<Vector>();
+        var path = new Path();
 
         Algorithm.LcsSes(A, B, EqualityComparer<char>.Default, path);
 

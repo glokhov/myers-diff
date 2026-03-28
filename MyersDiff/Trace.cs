@@ -1,29 +1,29 @@
 namespace MyersDiff;
 
-public abstract class Trace(List<Vector> path, Configuration config)
+public class Trace(Path path, Config config)
 {
-    protected IEnumerable<(int X, int Y, Cmd Cmd)> Enumerate(int n, int m)
+    public IEnumerable<(int X, int Y, Op Op)> Enumerate(int n, int m)
     {
         return EnumerateBackwords(n, m).Reverse();
     }
 
-    private IEnumerable<(int X, int Y, Cmd Cmd)> EnumerateBackwords(int x, int y)
+    private IEnumerable<(int X, int Y, Op Op)> EnumerateBackwords(int x, int y)
     {
-        for (var i = path.Count - 1; i >= 0; i--)
+        for (var i = path.Paths.Count - 1; i >= 0; i--)
         {
             switch (FindNearest(i, x, y))
             {
                 case (true, false):
-                    if (config.ReturnDelete) yield return (x, y, Cmd.Del);
+                    if (config.UseDelete) yield return (x, y, Op.Del);
                     x--;
                     break;
                 case (false, true):
-                    if (config.ReturnInsert) yield return (x, y, Cmd.Ins);
+                    if (config.UseInsert) yield return (x, y, Op.Ins);
                     y--;
                     break;
                 case (false, false):
                     i++;
-                    if (config.ReturnEqual) yield return (x, y, Cmd.Eq);
+                    if (config.UseEqual) yield return (x, y, Op.Eq);
                     x--;
                     y--;
                     break;
@@ -35,7 +35,7 @@ public abstract class Trace(List<Vector> path, Configuration config)
 
     private (bool Left, bool Above) FindNearest(int i, int x, int y)
     {
-        var v = path[i];
+        var v = path.Paths[i];
 
         foreach (var point in v.Points.Reverse())
         {
@@ -51,5 +51,12 @@ public abstract class Trace(List<Vector> path, Configuration config)
         }
 
         return (false, false);
+    }
+
+    public enum Op
+    {
+        Del,
+        Ins,
+        Eq
     }
 }

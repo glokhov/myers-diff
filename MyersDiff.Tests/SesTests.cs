@@ -1,6 +1,4 @@
-﻿using static MyersDiff.Cmd;
-
-namespace MyersDiff.Tests;
+﻿namespace MyersDiff.Tests;
 
 public sealed class SesTests
 {
@@ -10,12 +8,51 @@ public sealed class SesTests
     [Fact]
     public void Test_Build()
     {
-        var path = new List<Vector>();
+        var path = new Path();
 
         Algorithm.LcsSes(A, B, EqualityComparer<char>.Default, path);
 
         var ses = new Ses<char>(B.ToCharArray(), path).Build(A.Length, B.Length);
 
-        Assert.Equal([(1, Del, '\0'), (2, Del, '\0'), (3, Ins, 'b'), (6, Del, '\0'), (7, Ins, 'c')], ses);
+        var a = new Ses<char>.Cmd.Del(1);
+        var b = new Ses<char>.Cmd.Del(2);
+        var c = new Ses<char>.Cmd.Ins(3, 'b');
+        var d = new Ses<char>.Cmd.Del(6);
+        var e = new Ses<char>.Cmd.Ins(7, 'c');
+
+        Assert.Equal([a, b, c, d, e], ses);
+    }
+
+    [Fact]
+    public void Test_Cmd_Del()
+    {
+        Ses<char>.Cmd cmd = new Ses<char>.Cmd.Del(1);
+
+        switch (cmd)
+        {
+            case Ses<char>.Cmd.Del del:
+                Assert.Equal(1, del.Pos);
+                break;
+            default:
+                Assert.Fail("Unexpected command.");
+                break;
+        }
+    }
+
+    [Fact]
+    public void Test_Cmd_Ins()
+    {
+        Ses<char>.Cmd cmd = new Ses<char>.Cmd.Ins(1, 'A');
+
+        switch (cmd)
+        {
+            case Ses<char>.Cmd.Ins ins:
+                Assert.Equal(1, ins.Pos);
+                Assert.Equal('A', ins.Item);
+                break;
+            default:
+                Assert.Fail("Unexpected command.");
+                break;
+        }
     }
 }

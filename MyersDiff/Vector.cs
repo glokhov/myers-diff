@@ -21,7 +21,7 @@ public sealed class Vector(int max)
         }
     }
 
-    public Vector Copy(int d)
+    public Vector Clone(int d)
     {
         var v = new Vector(d);
 

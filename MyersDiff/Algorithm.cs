@@ -2,7 +2,7 @@ namespace MyersDiff;
 
 public static class Algorithm
 {
-    public static void LcsSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer, List<Vector> path)
+    public static void LcsSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer, Path path)
     {
         var n = a.Length;
         var m = b.Length;
@@ -42,7 +42,7 @@ public static class Algorithm
                 }
             }
 
-            path.Add(v.Copy(d));
+            path.OnPathFound(v, d);
         }
 
         throw new InvalidOperationException("Unexpected end of algorithm.");
