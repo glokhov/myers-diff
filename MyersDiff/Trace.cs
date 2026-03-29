@@ -44,6 +44,15 @@ public sealed class Trace(Path path, Trace.Filter filter)
             }
         }
 
+        // Emit any remaining diagonal (equal) moves from the leading snake
+        // that preceded the first snapshotted d-step.
+        while (x > 0 && y > 0)
+        {
+            if (filter.HasFlag(Filter.Eq)) stack.Push((x, y, Op.Eq));
+            x--;
+            y--;
+        }
+
         return stack;
     }
 

@@ -29,4 +29,58 @@ public sealed class LcsTests
     {
         Assert.Equal(S, Lcs<char>.Build(A, B));
     }
+
+    [Fact]
+    public void Test_Build_BothEmpty()
+    {
+        Assert.Equal("", Lcs.Build("", ""));
+    }
+
+    [Fact]
+    public void Test_Build_FirstEmpty()
+    {
+        Assert.Equal("", Lcs.Build("", "abc"));
+    }
+
+    [Fact]
+    public void Test_Build_SecondEmpty()
+    {
+        Assert.Equal("", Lcs.Build("abc", ""));
+    }
+
+    [Fact]
+    public void Test_Build_Identical()
+    {
+        Assert.Equal("abc", Lcs.Build("abc", "abc"));
+    }
+
+    [Fact]
+    public void Test_Build_Disjoint()
+    {
+        Assert.Equal("", Lcs.Build("abc", "xyz"));
+    }
+
+    [Fact]
+    public void Test_Build_SingleCharSame()
+    {
+        Assert.Equal("a", Lcs.Build("a", "a"));
+    }
+
+    [Fact]
+    public void Test_Build_SingleCharDifferent()
+    {
+        Assert.Equal("", Lcs.Build("a", "b"));
+    }
+
+    [Fact]
+    public void Test_Build_Prefix()
+    {
+        Assert.Equal("abc", Lcs.Build("abc", "abcd"));
+    }
+
+    [Fact]
+    public void Test_Build_Suffix()
+    {
+        Assert.Equal("bcd", Lcs.Build("abcd", "bcd"));
+    }
 }
