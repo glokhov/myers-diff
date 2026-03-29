@@ -2,7 +2,7 @@ namespace MyersDiff;
 
 public static class Algorithm
 {
-    public static void LcsSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer, Path path)
+    public static void LcsSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer, Path path) where T : IEquatable<T>
     {
         var n = a.Length;
         var m = b.Length;

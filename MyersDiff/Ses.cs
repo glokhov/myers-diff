@@ -30,7 +30,7 @@ public static class Ses
 /// <summary>
 ///  Shortest Edit Script
 /// </summary>
-public static class Ses<T>
+public static class Ses<T> where T : IEquatable<T>
 {
     public static Cmd[] Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b)
     {

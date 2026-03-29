@@ -19,7 +19,7 @@ public static class Lcs
 /// <summary>
 ///  Longest Common Subsequence
 /// </summary>
-public static class Lcs<T>
+public static class Lcs<T> where T : IEquatable<T>
 {
     public static T[] Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b)
     {
