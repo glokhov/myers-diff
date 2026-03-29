@@ -4,6 +4,24 @@
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Authors>Gennadiy Lokhov</Authors>
+        <Copyright>Copyright © Gennadiy Lokhov</Copyright>
+        <Description>A C# implementation of Eugene Myers' O(ND) difference algorithm for computing the Longest Common Subsequence (LCS) and Shortest Edit Script (SES) between two sequences.</Description>
+        <PackageId>MyersDiff</PackageId>
+        <PackageTags>diff;myers;difference;algorithm;longest;common;subsequence;lcs;shortest;edit;script;ses</PackageTags>
+        <PackageProjectUrl>https://github.com/glokhov/myers-diff</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/glokhov/myers-diff.git</RepositoryUrl>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <Version>0.1.0</Version>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="../../README.md" Pack="true" Visible="true" PackagePath="/" />
+    </ItemGroup>
 
 </Project>

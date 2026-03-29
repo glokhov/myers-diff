@@ -12,12 +12,12 @@ public static class Ses
 
     public static Cmd[] Build(string a, string b, EqualityComparer<char> comparer)
     {
-        return Ses<char>.Build(a, b, comparer, NewDel, NewIns);
+        return Ses<char>.Build(a, b, comparer, CmdDel, CmdIns);
     }
 
-    private static Cmd NewDel(int x) => new Cmd.Del(x);
+    private static Cmd CmdDel(int x) => new Cmd.Del(x);
 
-    private static Cmd NewIns(int x, char c) => new Cmd.Ins(x, c);
+    private static Cmd CmdIns(int x, char c) => new Cmd.Ins(x, c);
 
     public abstract record Cmd
     {
@@ -39,7 +39,7 @@ public static class Ses<T>
 
     public static Cmd[] Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer)
     {
-        return Build(a, b, comparer, NewDel, NewIns);
+        return Build(a, b, comparer, CmdDel, CmdIns);
     }
 
     internal static TCmd[] Build<TCmd>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer, Func<int, TCmd> del, Func<int, T, TCmd> ins)
@@ -71,9 +71,9 @@ public static class Ses<T>
         return list.ToArray();
     }
 
-    private static Cmd NewDel(int x) => new Cmd.Del(x);
+    private static Cmd CmdDel(int x) => new Cmd.Del(x);
 
-    private static Cmd NewIns(int x, T i) => new Cmd.Ins(x, i);
+    private static Cmd CmdIns(int x, T i) => new Cmd.Ins(x, i);
 
     public abstract record Cmd
     {
