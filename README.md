@@ -146,6 +146,10 @@ foreach (var item in trace.Enumerate(a.Length, b.Length))
 // + c
 ```
 
+## Limitations
+
+The linear-space refinement (divide-and-conquer) described in the original paper is not yet implemented. The current implementation stores the full snapshot history during the forward pass. This is planned for a future release.
+
 ## References
 
 - Myers, E.W. *An O(ND) difference algorithm and its variations.* Algorithmica 1, 251–266 (1986). [PDF](https://publications.mpi-cbg.de/Myers_1986_6330.pdf)
