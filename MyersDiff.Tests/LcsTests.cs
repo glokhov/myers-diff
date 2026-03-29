@@ -7,14 +7,14 @@ public sealed class LcsTests
     private const string S = "caba";
 
     [Fact]
+    public void Test_Build_String()
+    {
+        Assert.Equal(S, Lcs.Build(A, B));
+    }
+
+    [Fact]
     public void Test_Build()
     {
-        var path = new Path();
-
-        Algorithm.LcsSes(A, B, EqualityComparer<char>.Default, path);
-
-        var lcs = new Lcs<char>(A.ToCharArray(), path).Build(A.Length, B.Length);
-
-        Assert.Equal(S.ToCharArray(), lcs);
+        Assert.Equal(S, Lcs<char>.Build(A, B));
     }
 }

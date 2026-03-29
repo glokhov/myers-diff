@@ -3,12 +3,34 @@
 /// <summary>
 ///  Longest Common Subsequence
 /// </summary>
-/// <param name="a">Source sequence</param>
-/// <typeparam name="T">Type of elements</typeparam>
-public sealed class Lcs<T>(IReadOnlyList<T> a, Path path) : Trace(path, Config.Lcs)
+public static class Lcs
 {
-    public T[] Build(int n, int m)
+    public static string Build(string a, string b)
     {
-        return Enumerate(n, m).Select(item => a[item.X - 1]).ToArray();
+        return new string(Lcs<char>.Build(a, b));
+    }
+}
+
+/// <summary>
+///  Longest Common Subsequence
+/// </summary>
+public static class Lcs<T>
+{
+    public static T[] Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b)
+    {
+        var list = new List<T>();
+        var path = new Path();
+
+        Algorithm.LcsSes(a, b, EqualityComparer<T>.Default, path);
+
+        var trace = new Trace(path, Trace.Filter.Eq);
+
+        // ReSharper disable once LoopCanBeConvertedToQuery
+        foreach (var item in trace.Enumerate(a.Length, b.Length))
+        {
+            list.Add(a[item.X - 1]);
+        }
+
+        return list.ToArray();
     }
 }

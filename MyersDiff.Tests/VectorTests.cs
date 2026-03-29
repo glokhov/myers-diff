@@ -27,7 +27,7 @@ public sealed class VectorTests
         vector[0] = 2;
         vector[1] = 3;
 
-        var points = vector.Clone(0).Points.ToArray();
+        var points = vector.Copy(0).GetReversePoints();
 
         Assert.Equal((2, 2), points[0]);
     }
@@ -46,10 +46,10 @@ public sealed class VectorTests
         vector[2] = 6;
         vector[3] = 7;
 
-        var points = vector.Clone(1).Points.ToArray();
+        var points = vector.Copy(1).GetReversePoints();
 
-        Assert.Equal((3, 4), points[0]);
-        Assert.Equal((5, 4), points[1]);
+        Assert.Equal((3, 4), points[1]);
+        Assert.Equal((5, 4), points[0]);
     }
 
     [Fact]
@@ -66,10 +66,10 @@ public sealed class VectorTests
         vector[2] = 6;
         vector[3] = 7;
 
-        var points = vector.Clone(2).Points.ToArray();
+        var points = vector.Copy(2).GetReversePoints();
 
-        Assert.Equal((2, 4), points[0]);
+        Assert.Equal((2, 4), points[2]);
         Assert.Equal((4, 4), points[1]);
-        Assert.Equal((6, 4), points[2]);
+        Assert.Equal((6, 4), points[0]);
     }
 }

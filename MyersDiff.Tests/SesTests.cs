@@ -6,13 +6,23 @@ public sealed class SesTests
     private const string B = "cbabac";
 
     [Fact]
+    public void Test_Build_String()
+    {
+        var ses = Ses.Build(A, B);
+
+        var a = new Ses<char>.Cmd.Del(1);
+        var b = new Ses<char>.Cmd.Del(2);
+        var c = new Ses<char>.Cmd.Ins(3, 'b');
+        var d = new Ses<char>.Cmd.Del(6);
+        var e = new Ses<char>.Cmd.Ins(7, 'c');
+
+        Assert.Equal([a, b, c, d, e], ses);
+    }
+
+    [Fact]
     public void Test_Build()
     {
-        var path = new Path();
-
-        Algorithm.LcsSes(A, B, EqualityComparer<char>.Default, path);
-
-        var ses = new Ses<char>(B.ToCharArray(), path).Build(A.Length, B.Length);
+        var ses = Ses<char>.Build(A, B);
 
         var a = new Ses<char>.Cmd.Del(1);
         var b = new Ses<char>.Cmd.Del(2);

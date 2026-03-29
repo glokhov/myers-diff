@@ -3,24 +3,45 @@
 /// <summary>
 ///  Shortest Edit Script
 /// </summary>
-/// <param name="b">Target sequence</param>
-/// <typeparam name="T">Type of elements</typeparam>
-public sealed class Ses<T>(IReadOnlyList<T> b, Path path) : Trace(path, Config.Ses)
+public static class Ses
 {
-    public Cmd[] Build(int n, int m)
+    public static Ses<char>.Cmd[] Build(string a, string b)
     {
-        return Enumerate(n, m).Select(Convert).ToArray();
+        return Ses<char>.Build(a, b);
     }
+}
 
-    private Cmd Convert((int X, int Y, Op Op) item)
+/// <summary>
+///  Shortest Edit Script
+/// </summary>
+public static class Ses<T>
+{
+    public static Cmd[] Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b)
     {
-        return item.Op switch
+        var list = new List<Cmd>();
+        var path = new Path();
+
+        Algorithm.LcsSes(a, b, EqualityComparer<T>.Default, path);
+
+        var trace = new Trace(path, Trace.Filter.Del | Trace.Filter.Ins);
+
+        foreach (var item in trace.Enumerate(a.Length, b.Length))
         {
-            Op.Del => new Cmd.Del(item.X),
-            Op.Ins => new Cmd.Ins(item.X, b[item.Y - 1]),
-            Op.Eq => throw new InvalidOperationException("Unexpected command."),
-            _ => throw new InvalidOperationException("Unexpected command.")
-        };
+            switch (item.Op)
+            {
+                case Trace.Op.Del:
+                    list.Add(new Cmd.Del(item.X));
+                    break;
+                case Trace.Op.Ins:
+                    list.Add(new Cmd.Ins(item.X, b[item.Y - 1]));
+                    break;
+                case Trace.Op.Eq:
+                default:
+                    throw new InvalidOperationException("Unexpected command.");
+            }
+        }
+
+        return list.ToArray();
     }
 
     public abstract record Cmd

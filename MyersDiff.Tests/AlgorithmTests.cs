@@ -12,12 +12,21 @@ public sealed class AlgorithmTests
 
         Algorithm.LcsSes(A, B, EqualityComparer<char>.Default, path);
 
-        // Assert.Equal(6, path.Paths.Count);
-        Assert.Equal([(0, 0)], path.Paths[0].Points);
-        Assert.Equal([(0, 1), (1, 0)], path.Paths[1].Points);
-        Assert.Equal([(2, 4), (2, 2), (3, 1)], path.Paths[2].Points);
-        Assert.Equal([(3, 6), (4, 5), (5, 4), (5, 2)], path.Paths[3].Points);
-        Assert.Equal([(3, 7), (4, 6), (5, 5), (7, 5), (7, 3)], path.Paths[4].Points);
-        // Assert.Equal([(3, 8), (4, 7), (5, 6), (7, 6), (5, 2), (0, -5)], path.Paths[5].Points);
+        Assert.Equal(5, path.Snapshots.Count);
+        Assert.Equal([(0, 0)], path.Snapshots[0].GetReversePoints());
+        Assert.Equal([(1, 0), (0, 1)], path.Snapshots[1].GetReversePoints());
+        Assert.Equal([(3, 1), (2, 2), (2, 4)], path.Snapshots[2].GetReversePoints());
+        Assert.Equal([(5, 2), (5, 4), (4, 5), (3, 6)], path.Snapshots[3].GetReversePoints());
+        Assert.Equal([(7, 3), (7, 5), (5, 5), (4, 6), (3, 7)], path.Snapshots[4].GetReversePoints());
+    }
+
+    [Fact]
+    public void Test_LcsSes_Empty()
+    {
+        var path = new Path();
+
+        Algorithm.LcsSes("", "", EqualityComparer<char>.Default, path);
+
+        Assert.Empty(path.Snapshots);
     }
 }

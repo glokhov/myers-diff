@@ -2,10 +2,10 @@ namespace MyersDiff;
 
 public sealed class Path
 {
-    public List<Vector> Paths { get; } = [];
+    public List<Vector> Snapshots { get; } = [];
 
-    public void OnPathFound(Vector v, int d)
+    public void MakeSnapshot(Vector v, int d)
     {
-        Paths.Add(v.Clone(d));
+        Snapshots.Add(v.Copy(d));
     }
 }

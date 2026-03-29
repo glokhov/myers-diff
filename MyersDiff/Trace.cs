@@ -1,29 +1,29 @@
 namespace MyersDiff;
 
-public class Trace(Path path, Config config)
+public sealed class Trace(Path path, Trace.Filter filter)
 {
     public IEnumerable<(int X, int Y, Op Op)> Enumerate(int n, int m)
     {
-        return EnumerateBackwords(n, m).Reverse();
+        return EnumerateBackwards(n, m).Reverse();
     }
 
-    private IEnumerable<(int X, int Y, Op Op)> EnumerateBackwords(int x, int y)
+    private IEnumerable<(int X, int Y, Op Op)> EnumerateBackwards(int x, int y)
     {
-        for (var i = path.Paths.Count - 1; i >= 0; i--)
+        for (var i = path.Snapshots.Count - 1; i >= 0; i--)
         {
             switch (FindNearest(i, x, y))
             {
                 case (true, false):
-                    if (config.UseDelete) yield return (x, y, Op.Del);
+                    if (filter.HasFlag(Filter.Del)) yield return (x, y, Op.Del);
                     x--;
                     break;
                 case (false, true):
-                    if (config.UseInsert) yield return (x, y, Op.Ins);
+                    if (filter.HasFlag(Filter.Ins)) yield return (x, y, Op.Ins);
                     y--;
                     break;
                 case (false, false):
                     i++;
-                    if (config.UseEqual) yield return (x, y, Op.Eq);
+                    if (filter.HasFlag(Filter.Eq)) yield return (x, y, Op.Eq);
                     x--;
                     y--;
                     break;
@@ -35,9 +35,9 @@ public class Trace(Path path, Config config)
 
     private (bool Left, bool Above) FindNearest(int i, int x, int y)
     {
-        var v = path.Paths[i];
+        var v = path.Snapshots[i];
 
-        foreach (var point in v.Points.Reverse())
+        foreach (var point in v.GetReversePoints())
         {
             if (point == (x - 1, y))
             {
@@ -51,6 +51,14 @@ public class Trace(Path path, Config config)
         }
 
         return (false, false);
+    }
+
+    [Flags]
+    public enum Filter
+    {
+        Del = 1,
+        Ins = 2,
+        Eq = 4
     }
 
     public enum Op

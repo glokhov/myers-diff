@@ -7,6 +7,11 @@ public static class Algorithm
         var n = a.Length;
         var m = b.Length;
 
+        if (n == 0 && m == 0)
+        {
+            return;
+        }
+
         var max = n + m;
 
         var v = new Vector(max);
@@ -38,11 +43,14 @@ public static class Algorithm
 
                 if (x >= n && y >= m)
                 {
+                    // The final d-step is not snapshotted. During backtracking, any position
+                    // not found in a snapshot is interpreted as a diagonal (equal) move.
+
                     return;
                 }
             }
 
-            path.OnPathFound(v, d);
+            path.MakeSnapshot(v, d);
         }
 
         throw new InvalidOperationException("Unexpected end of algorithm.");

@@ -10,18 +10,20 @@ public sealed class Vector(int max)
         set => _v[k + max] = value;
     }
 
-    public IEnumerable<(int X, int Y)> Points
+    public (int X, int Y)[] GetReversePoints()
     {
-        get
+        var i = 0;
+        var points = new (int X, int Y)[max + 1];
+
+        for (var k = max; k >= -max; k -= 2)
         {
-            for (var k = -max; k <= max; k += 2)
-            {
-                yield return (this[k], this[k] - k);
-            }
+            points[i++] = (this[k], this[k] - k);
         }
+
+        return points;
     }
 
-    public Vector Clone(int d)
+    public Vector Copy(int d)
     {
         var v = new Vector(d);
 
