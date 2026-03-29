@@ -18,7 +18,7 @@ public sealed class VectorTests
     }
 
     [Fact]
-    public void Test_Points_Zero()
+    public void Test_Copy_Zero()
     {
         // ReSharper disable once UseObjectOrCollectionInitializer
         var vector = new Vector(3);
@@ -27,13 +27,16 @@ public sealed class VectorTests
         vector[0] = 2;
         vector[1] = 3;
 
-        var points = vector.Copy(0).GetReversePoints();
+        var copy = vector.Copy(0);
 
-        Assert.Equal((2, 2), points[0]);
+        Assert.False(copy.HasDiagonal(-1));
+        Assert.True(copy.HasDiagonal(0));
+        Assert.False(copy.HasDiagonal(1));
+        Assert.Equal(2, copy[0]);
     }
 
     [Fact]
-    public void Test_Points_Odd()
+    public void Test_Copy_Odd()
     {
         // ReSharper disable once UseObjectOrCollectionInitializer
         var vector = new Vector(3);
@@ -46,14 +49,17 @@ public sealed class VectorTests
         vector[2] = 6;
         vector[3] = 7;
 
-        var points = vector.Copy(1).GetReversePoints();
+        var copy = vector.Copy(1);
 
-        Assert.Equal((3, 4), points[1]);
-        Assert.Equal((5, 4), points[0]);
+        Assert.True(copy.HasDiagonal(-1));
+        Assert.False(copy.HasDiagonal(0));
+        Assert.True(copy.HasDiagonal(1));
+        Assert.Equal(3, copy[-1]);
+        Assert.Equal(5, copy[1]);
     }
 
     [Fact]
-    public void Test_Points_Even()
+    public void Test_Copy_Even()
     {
         // ReSharper disable once UseObjectOrCollectionInitializer
         var vector = new Vector(3);
@@ -66,10 +72,15 @@ public sealed class VectorTests
         vector[2] = 6;
         vector[3] = 7;
 
-        var points = vector.Copy(2).GetReversePoints();
+        var copy = vector.Copy(2);
 
-        Assert.Equal((2, 4), points[2]);
-        Assert.Equal((4, 4), points[1]);
-        Assert.Equal((6, 4), points[0]);
+        Assert.True(copy.HasDiagonal(-2));
+        Assert.False(copy.HasDiagonal(-1));
+        Assert.True(copy.HasDiagonal(0));
+        Assert.False(copy.HasDiagonal(1));
+        Assert.True(copy.HasDiagonal(2));
+        Assert.Equal(2, copy[-2]);
+        Assert.Equal(4, copy[0]);
+        Assert.Equal(6, copy[2]);
     }
 }

@@ -10,18 +10,7 @@ public sealed class Vector(int max)
         set => _v[k + max] = value;
     }
 
-    public (int X, int Y)[] GetReversePoints()
-    {
-        var i = 0;
-        var points = new (int X, int Y)[max + 1];
-
-        for (var k = max; k >= -max; k -= 2)
-        {
-            points[i++] = (this[k], this[k] - k);
-        }
-
-        return points;
-    }
+    public bool HasDiagonal(int k) => Math.Abs(k) <= max && (k + max) % 2 == 0;
 
     public Vector Copy(int d)
     {

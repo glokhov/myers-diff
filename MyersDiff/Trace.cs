@@ -36,18 +36,16 @@ public sealed class Trace(Path path, Trace.Filter filter)
     private (bool Left, bool Above) FindNearest(int i, int x, int y)
     {
         var v = path.Snapshots[i];
+        var k = x - y;
 
-        foreach (var point in v.GetReversePoints())
+        if (v.HasDiagonal(k + 1) && v[k + 1] == x)
         {
-            if (point == (x - 1, y))
-            {
-                return (true, false);
-            }
+            return (false, true);
+        }
 
-            if (point == (x, y - 1))
-            {
-                return (false, true);
-            }
+        if (v.HasDiagonal(k - 1) && v[k - 1] == x - 1)
+        {
+            return (true, false);
         }
 
         return (false, false);
