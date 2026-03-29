@@ -16,26 +16,26 @@ public sealed class Trace(Path path, Trace.Filter filter)
     /// <returns>An enumerable of <c>(X, Y, Op)</c> tuples describing each edit step.</returns>
     public IEnumerable<(int X, int Y, Op Op)> Enumerate(int n, int m)
     {
-        return EnumerateBackwards(n, m).Reverse();
-    }
+        var stack = new Stack<(int X, int Y, Op Op)>();
 
-    private IEnumerable<(int X, int Y, Op Op)> EnumerateBackwards(int x, int y)
-    {
+        var x = n;
+        var y = m;
+
         for (var i = path.Snapshots.Count - 1; i >= 0; i--)
         {
             switch (FindNearest(i, x, y))
             {
                 case (true, false):
-                    if (filter.HasFlag(Filter.Del)) yield return (x, y, Op.Del);
+                    if (filter.HasFlag(Filter.Del)) stack.Push((x, y, Op.Del));
                     x--;
                     break;
                 case (false, true):
-                    if (filter.HasFlag(Filter.Ins)) yield return (x, y, Op.Ins);
+                    if (filter.HasFlag(Filter.Ins)) stack.Push((x, y, Op.Ins));
                     y--;
                     break;
                 case (false, false):
                     i++;
-                    if (filter.HasFlag(Filter.Eq)) yield return (x, y, Op.Eq);
+                    if (filter.HasFlag(Filter.Eq)) stack.Push((x, y, Op.Eq));
                     x--;
                     y--;
                     break;
@@ -43,6 +43,8 @@ public sealed class Trace(Path path, Trace.Filter filter)
                     throw new InvalidOperationException("Unexpected state.");
             }
         }
+
+        return stack;
     }
 
     private (bool Left, bool Above) FindNearest(int i, int x, int y)
@@ -71,8 +73,10 @@ public sealed class Trace(Path path, Trace.Filter filter)
     {
         /// <summary>Includes delete operations.</summary>
         Del = 1,
+
         /// <summary>Includes insert operations.</summary>
         Ins = 2,
+
         /// <summary>Includes equal (diagonal) operations.</summary>
         Eq = 4
     }
@@ -84,8 +88,10 @@ public sealed class Trace(Path path, Trace.Filter filter)
     {
         /// <summary>A deletion from the original sequence.</summary>
         Del,
+
         /// <summary>An insertion from the modified sequence.</summary>
         Ins,
+
         /// <summary>An element common to both sequences.</summary>
         Eq
     }
