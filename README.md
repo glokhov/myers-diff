@@ -18,10 +18,26 @@ string lcs = Lcs.Build("abcabba", "cbabac");
 // "caba"
 ```
 
+With a custom comparer:
+
+```csharp
+string lcs = Lcs.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
+
+// "caba"
+```
+
 ### Generic
 
 ```csharp
 char[] lcs = Lcs<char>.Build("abcabba", "cbabac");
+
+// ['c', 'a', 'b', 'a']
+```
+
+With a custom comparer:
+
+```csharp
+char[] lcs = Lcs<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
 
 // ['c', 'a', 'b', 'a']
 ```
@@ -49,6 +65,14 @@ foreach (var cmd in ses)
 }
 ```
 
+With a custom comparer:
+
+```csharp
+Ses.Cmd[] ses = Ses.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
+
+// [Del(1), Del(2), Ins(3, 'b'), Del(6), Ins(7, 'c')]
+```
+
 ### Generic
 
 ```csharp
@@ -68,6 +92,14 @@ foreach (var cmd in ses)
             break;
     }
 }
+```
+
+With a custom comparer:
+
+```csharp
+Ses<char>.Cmd[] ses = Ses<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
+
+// [Del(1), Del(2), Ins(3, 'b'), Del(6), Ins(7, 'c')]
 ```
 
 
