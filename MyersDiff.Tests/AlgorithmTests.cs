@@ -16,7 +16,7 @@ public sealed class AlgorithmTests
         // [(3, 6), (4, 5), (5, 4), (5, 2)]
         // [(3, 7), (4, 6), (5, 5), (7, 5), (7, 3)]
 
-        Assert.Equal(5, path.Snapshots.Count);
+        Assert.Equal(5, path.Snapshots.Length);
 
         // d=0: k=0 → x=0
         var s0 = path.Snapshots[0];
@@ -68,12 +68,12 @@ public sealed class AlgorithmTests
     [Fact]
     public void Test_LcsSes_Empty()
     {
-        Assert.Empty(Algorithm.LcsSes("", "", EqualityComparer<char>.Default).Snapshots);
+        Assert.Equal(0, Algorithm.LcsSes("", "", EqualityComparer<char>.Default).Snapshots.Length);
     }
 
     [Fact]
     public void Test_LcsSes_ExplicitComparer()
     {
-        Assert.Empty(Algorithm.LcsSes("abc", "ABC", ExplicitComparer.Instance).Snapshots);
+        Assert.Equal(0, Algorithm.LcsSes("abc", "ABC", ExplicitComparer.Instance).Snapshots.Length);
     }
 }

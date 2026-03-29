@@ -7,11 +7,11 @@ public sealed class TraceTests
     private const Trace.Filter Filter = Trace.Filter.Del | Trace.Filter.Ins | Trace.Filter.Eq;
 
     [Fact]
-    public void Test_Build()
+    public void Test_Enumerate()
     {
         var path = Algorithm.LcsSes(A, B, EqualityComparer<char>.Default);
 
-        var edits = new Trace(path, Filter).Build(A.Length, B.Length);
+        var edits = new Trace(path, Filter).EnumerateEdits(A.Length, B.Length);
 
         Assert.Equal(
             [
@@ -29,21 +29,21 @@ public sealed class TraceTests
     }
 
     [Fact]
-    public void Test_Build_BothEmpty()
+    public void Test_Enumerate_BothEmpty()
     {
         var path = Algorithm.LcsSes("", "", EqualityComparer<char>.Default);
 
-        var edits = new Trace(path, Filter).Build(0, 0);
+        var edits = new Trace(path, Filter).EnumerateEdits(0, 0);
 
         Assert.Empty(edits);
     }
 
     [Fact]
-    public void Test_Build_FirstEmpty()
+    public void Test_Enumerate_FirstEmpty()
     {
         var path = Algorithm.LcsSes("", "abc", EqualityComparer<char>.Default);
 
-        var edits = new Trace(path, Filter).Build(0, 3);
+        var edits = new Trace(path, Filter).EnumerateEdits(0, 3);
 
         Assert.Equal(
             [
@@ -55,11 +55,11 @@ public sealed class TraceTests
     }
 
     [Fact]
-    public void Test_Build_SecondEmpty()
+    public void Test_Enumerate_SecondEmpty()
     {
         var path = Algorithm.LcsSes("abc", "", EqualityComparer<char>.Default);
 
-        var edits = new Trace(path, Filter).Build(3, 0);
+        var edits = new Trace(path, Filter).EnumerateEdits(3, 0);
 
         Assert.Equal(
             [
@@ -71,11 +71,11 @@ public sealed class TraceTests
     }
 
     [Fact]
-    public void Test_Build_Identical()
+    public void Test_Enumerate_Identical()
     {
         var path = Algorithm.LcsSes("abc", "abc", EqualityComparer<char>.Default);
 
-        var edits = new Trace(path, Filter).Build(3, 3);
+        var edits = new Trace(path, Filter).EnumerateEdits(3, 3);
 
         Assert.Equal(
             [
@@ -87,11 +87,11 @@ public sealed class TraceTests
     }
 
     [Fact]
-    public void Test_Build_Disjoint()
+    public void Test_Enumerate_Disjoint()
     {
         var path = Algorithm.LcsSes("abc", "xyz", EqualityComparer<char>.Default);
 
-        var edits = new Trace(path, Filter).Build(3, 3);
+        var edits = new Trace(path, Filter).EnumerateEdits(3, 3);
 
         Assert.Equal(
             [
@@ -106,11 +106,11 @@ public sealed class TraceTests
     }
 
     [Fact]
-    public void Test_Build_SingleCharDifferent()
+    public void Test_Enumerate_SingleCharDifferent()
     {
         var path = Algorithm.LcsSes("a", "b", EqualityComparer<char>.Default);
 
-        var edits = new Trace(path, Filter).Build(1, 1);
+        var edits = new Trace(path, Filter).EnumerateEdits(1, 1);
 
         Assert.Equal(
             [
@@ -121,11 +121,11 @@ public sealed class TraceTests
     }
 
     [Fact]
-    public void Test_Build_ExplicitComparer()
+    public void Test_Enumerate_ExplicitComparer()
     {
         var path = Algorithm.LcsSes("abX", "ABY", ExplicitComparer.Instance);
 
-        var edits = new Trace(path, Filter).Build(3, 3);
+        var edits = new Trace(path, Filter).EnumerateEdits(3, 3);
 
         Assert.Equal(
             [

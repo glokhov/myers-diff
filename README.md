@@ -30,7 +30,7 @@ string lcs = Lcs.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
 ### Generic
 
 ```csharp
-char[] lcs = Lcs<char>.Build("abcabba", "cbabac");
+ReadOnlySpan<char> lcs = Lcs<char>.Build("abcabba", "cbabac");
 
 // ['c', 'a', 'b', 'a']
 ```
@@ -38,7 +38,7 @@ char[] lcs = Lcs<char>.Build("abcabba", "cbabac");
 With an explicit comparer:
 
 ```csharp
-char[] lcs = Lcs<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
+ReadOnlySpan<char> lcs = Lcs<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
 
 // ['c', 'a', 'b', 'a']
 ```
@@ -48,7 +48,7 @@ char[] lcs = Lcs<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default
 ### String
 
 ```csharp
-Ses.Cmd[] ses = Ses.Build("abcabba", "cbabac");
+ReadOnlySpan<Ses.Cmd> ses = Ses.Build("abcabba", "cbabac");
 
 // [Del(1), Del(2), Ins(3, 'b'), Del(6), Ins(7, 'c')]
 
@@ -69,7 +69,7 @@ foreach (var cmd in ses)
 With an explicit comparer:
 
 ```csharp
-Ses.Cmd[] ses = Ses.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
+ReadOnlySpan<Ses.Cmd> ses = Ses.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
 
 // [Del(1), Del(2), Ins(3, 'b'), Del(6), Ins(7, 'c')]
 ```
@@ -77,7 +77,7 @@ Ses.Cmd[] ses = Ses.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
 ### Generic
 
 ```csharp
-Ses<char>.Cmd[] ses = Ses<char>.Build("abcabba", "cbabac");
+ReadOnlySpan<Ses<char>.Cmd> ses = Ses<char>.Build("abcabba", "cbabac");
 
 // [Del(1), Del(2), Ins(3, 'b'), Del(6), Ins(7, 'c')]
 
@@ -98,7 +98,7 @@ foreach (var cmd in ses)
 With an explicit comparer:
 
 ```csharp
-Ses<char>.Cmd[] ses = Ses<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
+ReadOnlySpan<Ses<char>.Cmd> ses = Ses<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
 
 // [Del(1), Del(2), Ins(3, 'b'), Del(6), Ins(7, 'c')]
 ```
@@ -117,7 +117,7 @@ var path = Algorithm.LcsSes(a, b, EqualityComparer<char>.Default);
 
 var trace = new Trace(path, Trace.Filter.Del | Trace.Filter.Ins | Trace.Filter.Eq);
 
-foreach (var edit in trace.Build(a.Length, b.Length))
+foreach (var edit in trace.EnumerateEdits(a.Length, b.Length))
 {
     switch (edit.Op)
     {

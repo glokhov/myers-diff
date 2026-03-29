@@ -9,19 +9,19 @@ namespace MyersDiff;
 public sealed class Trace(Path path, Trace.Filter filter)
 {
     /// <summary>
-    ///  Reconstructs the edit operations in forward order.
+    ///  Enumerates the edit operations in forward order.
     /// </summary>
     /// <param name="n">The length of the original sequence.</param>
     /// <param name="m">The length of the modified sequence.</param>
-    /// <returns>A read-only collection of <see cref="Edit"/> records describing each edit step.</returns>
-    public IReadOnlyCollection<Edit> Build(int n, int m)
+    /// <returns>A sequence of <see cref="Edit"/> records describing each edit step.</returns>
+    public IEnumerable<Edit> EnumerateEdits(int n, int m)
     {
         var stack = new Stack<Edit>();
 
         var x = n;
         var y = m;
 
-        for (var i = path.Snapshots.Count - 1; i >= 0; i--)
+        for (var i = path.Snapshots.Length - 1; i >= 0; i--)
         {
             switch (FindNearest(i, x, y))
             {
@@ -53,7 +53,10 @@ public sealed class Trace(Path path, Trace.Filter filter)
             y--;
         }
 
-        return stack;
+        foreach (var edit in stack)
+        {
+            yield return edit;
+        }
     }
 
     private (bool Left, bool Above) FindNearest(int i, int x, int y)

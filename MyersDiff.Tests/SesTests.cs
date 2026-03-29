@@ -130,7 +130,7 @@ public sealed class SesTests
     [Fact]
     public void Test_Build_BothEmpty()
     {
-        Assert.Empty(Ses.Build("", ""));
+        Assert.True(Ses.Build("", "").IsEmpty);
     }
 
     [Fact]
@@ -164,7 +164,7 @@ public sealed class SesTests
     [Fact]
     public void Test_Build_Identical()
     {
-        Assert.Empty(Ses.Build("abc", "abc"));
+        Assert.True(Ses.Build("abc", "abc").IsEmpty);
     }
 
     [Fact]
@@ -187,7 +187,7 @@ public sealed class SesTests
     [Fact]
     public void Test_Build_SingleCharSame()
     {
-        Assert.Empty(Ses.Build("a", "a"));
+        Assert.True(Ses.Build("a", "a").IsEmpty);
     }
 
     [Fact]
@@ -222,13 +222,13 @@ public sealed class SesTests
     [Fact]
     public void Test_Build_ExplicitComparer_String_Identical()
     {
-        Assert.Empty(Ses.Build("abc", "ABC", ExplicitComparer.Instance));
+        Assert.True(Ses.Build("abc", "ABC", ExplicitComparer.Instance).IsEmpty);
     }
 
     [Fact]
     public void Test_Build_ExplicitComparer_Identical()
     {
-        Assert.Empty(Ses<char>.Build("abc", "ABC", ExplicitComparer.Instance));
+        Assert.True(Ses<char>.Build("abc", "ABC", ExplicitComparer.Instance).IsEmpty);
     }
 
     [Fact]

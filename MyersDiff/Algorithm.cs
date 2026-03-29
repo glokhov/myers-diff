@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace MyersDiff;
 
 /// <summary>
@@ -18,13 +20,13 @@ public static class Algorithm
     {
         var p = new Path();
 
-        if (a.SequenceEqual(b, comparer))
+        var n = a.Length;
+        var m = b.Length;
+
+        if (n is 0 && m is 0)
         {
             return p;
         }
-
-        var n = a.Length;
-        var m = b.Length;
 
         var max = n + m;
 
@@ -67,6 +69,8 @@ public static class Algorithm
             p.MakeSnapshot(v, d);
         }
 
-        throw new InvalidOperationException("Unexpected end of algorithm.");
+        Debug.Fail("Unexpected end of algorithm.");
+
+        return p;
     }
 }

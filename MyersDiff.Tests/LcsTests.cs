@@ -15,7 +15,7 @@ public sealed class LcsTests
     [Fact]
     public void Test_Build_Comparer()
     {
-        Assert.Equal(S, Lcs<char>.Build(A, B, EqualityComparer<char>.Default));
+        Assert.Equal(S, Lcs<char>.Build(A, B, EqualityComparer<char>.Default).ToArray());
     }
 
     [Fact]
@@ -27,7 +27,7 @@ public sealed class LcsTests
     [Fact]
     public void Test_Build()
     {
-        Assert.Equal(S, Lcs<char>.Build(A, B));
+        Assert.Equal(S, Lcs<char>.Build(A, B).ToArray());
     }
 
     [Fact]
@@ -93,6 +93,6 @@ public sealed class LcsTests
     [Fact]
     public void Test_Build_ExplicitComparer()
     {
-        Assert.Equal("abc", Lcs<char>.Build("abc", "ABC", ExplicitComparer.Instance));
+        Assert.Equal("abc", Lcs<char>.Build("abc", "ABC", ExplicitComparer.Instance).ToArray());
     }
 }

@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace MyersDiff;
 
 /// <summary>
@@ -10,7 +12,7 @@ public sealed class Path
     /// <summary>
     ///  The vector snapshots, one per d-step.
     /// </summary>
-    public IReadOnlyList<Vector> Snapshots => _snapshots;
+    public ReadOnlySpan<Vector> Snapshots => CollectionsMarshal.AsSpan(_snapshots);
 
     /// <summary>
     ///  Copies the current vector state for the given d-step and appends it to <see cref="Snapshots"/>.

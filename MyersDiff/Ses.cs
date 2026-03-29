@@ -1,4 +1,6 @@
-﻿namespace MyersDiff;
+﻿using System.Runtime.InteropServices;
+
+namespace MyersDiff;
 
 /// <summary>
 ///  Shortest Edit Script — string convenience overloads.
@@ -10,8 +12,8 @@ public static class Ses
     /// </summary>
     /// <param name="a">The original string.</param>
     /// <param name="b">The modified string.</param>
-    /// <returns>An array of edit commands that transform <paramref name="a"/> into <paramref name="b"/>.</returns>
-    public static Cmd[] Build(string a, string b)
+    /// <returns>A span of edit commands that transform <paramref name="a"/> into <paramref name="b"/>.</returns>
+    public static ReadOnlySpan<Cmd> Build(string a, string b)
     {
         return Build(a, b, EqualityComparer<char>.Default);
     }
@@ -22,8 +24,8 @@ public static class Ses
     /// <param name="a">The original string.</param>
     /// <param name="b">The modified string.</param>
     /// <param name="comparer">The equality comparer used to compare characters.</param>
-    /// <returns>An array of edit commands that transform <paramref name="a"/> into <paramref name="b"/>.</returns>
-    public static Cmd[] Build(string a, string b, IEqualityComparer<char> comparer)
+    /// <returns>A span of edit commands that transform <paramref name="a"/> into <paramref name="b"/>.</returns>
+    public static ReadOnlySpan<Cmd> Build(string a, string b, IEqualityComparer<char> comparer)
     {
         return Ses<char>.Build(a, b, comparer, CmdDel, CmdIns);
     }
@@ -63,8 +65,8 @@ public static class Ses<T> where T : IEquatable<T>
     /// </summary>
     /// <param name="a">The original sequence.</param>
     /// <param name="b">The modified sequence.</param>
-    /// <returns>An array of edit commands that transform <paramref name="a"/> into <paramref name="b"/>.</returns>
-    public static Cmd[] Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b)
+    /// <returns>A span of edit commands that transform <paramref name="a"/> into <paramref name="b"/>.</returns>
+    public static ReadOnlySpan<Cmd> Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b)
     {
         return Build(a, b, EqualityComparer<T>.Default);
     }
@@ -75,13 +77,13 @@ public static class Ses<T> where T : IEquatable<T>
     /// <param name="a">The original sequence.</param>
     /// <param name="b">The modified sequence.</param>
     /// <param name="comparer">The equality comparer used to compare elements.</param>
-    /// <returns>An array of edit commands that transform <paramref name="a"/> into <paramref name="b"/>.</returns>
-    public static Cmd[] Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer)
+    /// <returns>A span of edit commands that transform <paramref name="a"/> into <paramref name="b"/>.</returns>
+    public static ReadOnlySpan<Cmd> Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer)
     {
         return Build(a, b, comparer, CmdDel, CmdIns);
     }
 
-    internal static TCmd[] Build<TCmd>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer, Func<int, TCmd> del, Func<int, T, TCmd> ins)
+    internal static ReadOnlySpan<TCmd> Build<TCmd>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer, Func<int, TCmd> del, Func<int, T, TCmd> ins)
     {
         var list = new List<TCmd>();
 
@@ -89,7 +91,7 @@ public static class Ses<T> where T : IEquatable<T>
 
         var trace = new Trace(path, Trace.Filter.Del | Trace.Filter.Ins);
 
-        foreach (var edit in trace.Build(a.Length, b.Length))
+        foreach (var edit in trace.EnumerateEdits(a.Length, b.Length))
         {
             switch (edit.Op)
             {
@@ -106,7 +108,7 @@ public static class Ses<T> where T : IEquatable<T>
             }
         }
 
-        return list.ToArray();
+        return CollectionsMarshal.AsSpan(list);
     }
 
     private static Cmd CmdDel(int x) => new Cmd.Del(x);

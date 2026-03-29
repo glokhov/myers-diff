@@ -1,4 +1,6 @@
-﻿namespace MyersDiff;
+﻿using System.Runtime.InteropServices;
+
+namespace MyersDiff;
 
 /// <summary>
 ///  Longest Common Subsequence — string convenience overloads.
@@ -40,8 +42,8 @@ public static class Lcs<T> where T : IEquatable<T>
     /// </summary>
     /// <param name="a">The original sequence.</param>
     /// <param name="b">The modified sequence.</param>
-    /// <returns>An array containing the longest common subsequence.</returns>
-    public static T[] Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b)
+    /// <returns>A span containing the longest common subsequence.</returns>
+    public static ReadOnlySpan<T> Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b)
     {
         return Build(a, b, EqualityComparer<T>.Default);
     }
@@ -52,8 +54,8 @@ public static class Lcs<T> where T : IEquatable<T>
     /// <param name="a">The original sequence.</param>
     /// <param name="b">The modified sequence.</param>
     /// <param name="comparer">The equality comparer used to compare elements.</param>
-    /// <returns>An array containing the longest common subsequence.</returns>
-    public static T[] Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer)
+    /// <returns>A span containing the longest common subsequence.</returns>
+    public static ReadOnlySpan<T> Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer)
     {
         var list = new List<T>();
 
@@ -61,11 +63,11 @@ public static class Lcs<T> where T : IEquatable<T>
 
         var trace = new Trace(path, Trace.Filter.Eq);
 
-        foreach (var edit in trace.Build(a.Length, b.Length))
+        foreach (var edit in trace.EnumerateEdits(a.Length, b.Length))
         {
             list.Add(a[edit.X - 1]);
         }
 
-        return list.ToArray();
+        return CollectionsMarshal.AsSpan(list);
     }
 }
