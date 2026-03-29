@@ -6,6 +6,20 @@ public sealed class SesTests
     private const string B = "cbabac";
 
     [Fact]
+    public void Test_Build_Comparer_String()
+    {
+        var ses = Ses.Build(A, B, EqualityComparer<char>.Default);
+
+        var a = new Ses.Cmd.Del(1);
+        var b = new Ses.Cmd.Del(2);
+        var c = new Ses.Cmd.Ins(3, 'b');
+        var d = new Ses.Cmd.Del(6);
+        var e = new Ses.Cmd.Ins(7, 'c');
+
+        Assert.Equal([a, b, c, d, e], ses);
+    }
+
+    [Fact]
     public void Test_Build_String()
     {
         var ses = Ses.Build(A, B);
@@ -56,6 +70,20 @@ public sealed class SesTests
     public void Test_Build()
     {
         var ses = Ses<char>.Build(A, B);
+
+        var a = new Ses<char>.Cmd.Del(1);
+        var b = new Ses<char>.Cmd.Del(2);
+        var c = new Ses<char>.Cmd.Ins(3, 'b');
+        var d = new Ses<char>.Cmd.Del(6);
+        var e = new Ses<char>.Cmd.Ins(7, 'c');
+
+        Assert.Equal([a, b, c, d, e], ses);
+    }
+
+    [Fact]
+    public void Test_Build_Comparer()
+    {
+        var ses = Ses<char>.Build(A, B, EqualityComparer<char>.Default);
 
         var a = new Ses<char>.Cmd.Del(1);
         var b = new Ses<char>.Cmd.Del(2);

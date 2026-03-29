@@ -10,7 +10,10 @@ public sealed class Vector(int max)
         set => _v[k + max] = value;
     }
 
-    public bool HasDiagonal(int k) => Math.Abs(k) <= max && (k + max) % 2 == 0;
+    public bool HasDiagonal(int k)
+    {
+        return Math.Abs(k) <= max && (k + max) % 2 == 0;
+    }
 
     public Vector Copy(int d)
     {

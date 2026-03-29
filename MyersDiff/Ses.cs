@@ -7,7 +7,12 @@ public static class Ses
 {
     public static Cmd[] Build(string a, string b)
     {
-        return Ses<char>.Build(a, b, NewDel, NewIns);
+        return Build(a, b, EqualityComparer<char>.Default);
+    }
+
+    public static Cmd[] Build(string a, string b, EqualityComparer<char> comparer)
+    {
+        return Ses<char>.Build(a, b, comparer, NewDel, NewIns);
     }
 
     private static Cmd NewDel(int x) => new Cmd.Del(x);
@@ -29,15 +34,20 @@ public static class Ses<T>
 {
     public static Cmd[] Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b)
     {
-        return Build(a, b, NewDel, NewIns);
+        return Build(a, b, EqualityComparer<T>.Default);
     }
 
-    internal static TCmd[] Build<TCmd>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, Func<int, TCmd> del, Func<int, T, TCmd> ins)
+    public static Cmd[] Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer)
+    {
+        return Build(a, b, comparer, NewDel, NewIns);
+    }
+
+    internal static TCmd[] Build<TCmd>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer, Func<int, TCmd> del, Func<int, T, TCmd> ins)
     {
         var list = new List<TCmd>();
         var path = new Path();
 
-        Algorithm.LcsSes(a, b, EqualityComparer<T>.Default, path);
+        Algorithm.LcsSes(a, b, comparer, path);
 
         var trace = new Trace(path, Trace.Filter.Del | Trace.Filter.Ins);
 
@@ -52,8 +62,9 @@ public static class Ses<T>
                     list.Add(ins(item.X, b[item.Y - 1]));
                     break;
                 case Trace.Op.Eq:
+                    break;
                 default:
-                    throw new InvalidOperationException("Unexpected command.");
+                    throw new InvalidOperationException("Unexpected operation.");
             }
         }
 
