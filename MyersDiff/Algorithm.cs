@@ -1,7 +1,19 @@
 namespace MyersDiff;
 
+/// <summary>
+///  Core implementation of the Myers O(ND) difference algorithm.
+/// </summary>
 public static class Algorithm
 {
+    /// <summary>
+    ///  Computes the longest common subsequence and shortest edit script between two sequences
+    ///  using the Myers O(ND) difference algorithm.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the sequences.</typeparam>
+    /// <param name="a">The original sequence.</param>
+    /// <param name="b">The modified sequence.</param>
+    /// <param name="comparer">The equality comparer used to compare elements.</param>
+    /// <param name="path">The path to record vector snapshots into.</param>
     public static void LcsSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer, Path path) where T : IEquatable<T>
     {
         var n = a.Length;
