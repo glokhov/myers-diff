@@ -103,6 +103,49 @@ Ses<char>.Cmd[] ses = Ses<char>.Build("abcabba", "cbabac", EqualityComparer<char
 ```
 
 
+## Custom Trace Logic
+
+The `Path`, `Vector`, and `Trace` types are public, so you can call `Algorithm.LcsSes` directly and implement your own trace logic on top of the recorded snapshots.
+
+For example, building a unified diff-style output:
+
+```csharp
+string a = "abcabba";
+string b = "cbabac";
+
+var path = new Path();
+
+Algorithm.LcsSes<char>(a, b, EqualityComparer<char>.Default, path);
+
+var trace = new Trace(path, Trace.Filter.Del | Trace.Filter.Ins | Trace.Filter.Eq);
+
+foreach (var item in trace.Enumerate(a.Length, b.Length))
+{
+    switch (item.Op)
+    {
+        case Trace.Op.Del:
+            Console.WriteLine($"- {a[item.X - 1]}");
+            break;
+        case Trace.Op.Ins:
+            Console.WriteLine($"+ {b[item.Y - 1]}");
+            break;
+        case Trace.Op.Eq:
+            Console.WriteLine($"  {a[item.X - 1]}");
+            break;
+    }
+}
+
+// - a
+// - b
+//   c
+// + b
+//   a
+//   b
+// - b
+//   a
+// + c
+```
+
 ## References
 
 - Myers, E.W. *An O(ND) difference algorithm and its variations.* Algorithmica 1, 251–266 (1986). [PDF](https://publications.mpi-cbg.de/Myers_1986_6330.pdf)
