@@ -56,9 +56,8 @@ public static class Lcs<T> where T : IEquatable<T>
     public static T[] Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer)
     {
         var list = new List<T>();
-        var path = new Path();
 
-        Algorithm.LcsSes(a, b, comparer, path);
+        var path = Algorithm.LcsSes(a, b, comparer);
 
         var trace = new Trace(path, Trace.Filter.Eq);
 

@@ -47,8 +47,8 @@ public static class Ses
         ///  A command to insert a character at the specified position.
         /// </summary>
         /// <param name="Pos">The 1-based position in the original sequence after which to insert.</param>
-        /// <param name="Char">The character to insert.</param>
-        public sealed record Ins(int Pos, char Char) : Cmd;
+        /// <param name="Item">The character to insert.</param>
+        public sealed record Ins(int Pos, char Item) : Cmd;
     }
 }
 
@@ -84,9 +84,8 @@ public static class Ses<T> where T : IEquatable<T>
     internal static TCmd[] Build<TCmd>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer, Func<int, TCmd> del, Func<int, T, TCmd> ins)
     {
         var list = new List<TCmd>();
-        var path = new Path();
 
-        Algorithm.LcsSes(a, b, comparer, path);
+        var path = Algorithm.LcsSes(a, b, comparer);
 
         var trace = new Trace(path, Trace.Filter.Del | Trace.Filter.Ins);
 

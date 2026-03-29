@@ -59,7 +59,7 @@ foreach (var cmd in ses)
             Console.WriteLine($"Delete at position {del.Pos}");
             break;
         case Ses.Cmd.Ins ins:
-            Console.WriteLine($"Insert '{ins.Char}' at position {ins.Pos}");
+            Console.WriteLine($"Insert '{ins.Item}' at position {ins.Pos}");
             break;
     }
 }
@@ -113,24 +113,22 @@ For example, building a unified diff-style output:
 string a = "abcabba";
 string b = "cbabac";
 
-var path = new Path();
-
-Algorithm.LcsSes<char>(a, b, EqualityComparer<char>.Default, path);
+var path = Algorithm.LcsSes(a, b, EqualityComparer<char>.Default);
 
 var trace = new Trace(path, Trace.Filter.Del | Trace.Filter.Ins | Trace.Filter.Eq);
 
-foreach (var item in trace.Enumerate(a.Length, b.Length))
+foreach (var edit in trace.Enumerate(a.Length, b.Length))
 {
-    switch (item.Op)
+    switch (edit.Op)
     {
         case Trace.Op.Del:
-            Console.WriteLine($"- {a[item.X - 1]}");
+            Console.WriteLine($"- {a[edit.X - 1]}");
             break;
         case Trace.Op.Ins:
-            Console.WriteLine($"+ {b[item.Y - 1]}");
+            Console.WriteLine($"+ {b[edit.Y - 1]}");
             break;
         case Trace.Op.Eq:
-            Console.WriteLine($"  {a[item.X - 1]}");
+            Console.WriteLine($"  {a[edit.X - 1]}");
             break;
     }
 }

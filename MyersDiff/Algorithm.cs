@@ -13,15 +13,17 @@ public static class Algorithm
     /// <param name="a">The original sequence.</param>
     /// <param name="b">The modified sequence.</param>
     /// <param name="comparer">The equality comparer used to compare elements.</param>
-    /// <param name="path">The path to record vector snapshots into.</param>
-    public static void LcsSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer, Path path) where T : IEquatable<T>
+    /// <returns>A <see cref="Path"/> containing vector snapshots from the forward pass.</returns>
+    public static Path LcsSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer) where T : IEquatable<T>
     {
+        var p = new Path();
+
         var n = a.Length;
         var m = b.Length;
 
         if (n == 0 && m == 0)
         {
-            return;
+            return p;
         }
 
         var max = n + m;
@@ -58,11 +60,11 @@ public static class Algorithm
                     // The final d-step is not snapshotted. During backtracking, any position
                     // not found in a snapshot is interpreted as a diagonal (equal) move.
 
-                    return;
+                    return p;
                 }
             }
 
-            path.MakeSnapshot(v, d);
+            p.MakeSnapshot(v, d);
         }
 
         throw new InvalidOperationException("Unexpected end of algorithm.");

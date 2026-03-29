@@ -8,9 +8,7 @@ public sealed class AlgorithmTests
     [Fact]
     public void Test_LcsSes()
     {
-        var path = new Path();
-
-        Algorithm.LcsSes(A, B, EqualityComparer<char>.Default, path);
+        var path = Algorithm.LcsSes(A, B, EqualityComparer<char>.Default);
 
         // [(0, 0)]
         // [(0, 1), (1, 0)]
@@ -70,10 +68,6 @@ public sealed class AlgorithmTests
     [Fact]
     public void Test_LcsSes_Empty()
     {
-        var path = new Path();
-
-        Algorithm.LcsSes("", "", EqualityComparer<char>.Default, path);
-
-        Assert.Empty(path.Snapshots);
+        Assert.Empty(Algorithm.LcsSes("", "", EqualityComparer<char>.Default).Snapshots);
     }
 }

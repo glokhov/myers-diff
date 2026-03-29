@@ -2,7 +2,7 @@ namespace MyersDiff;
 
 /// <summary>
 ///  Backtracks through vector snapshots to reconstruct the edit graph path,
-///  yielding <c>(x, y, Op)</c> tuples for each step.
+///  yielding <see cref="Edit"/> records for each step.
 /// </summary>
 /// <param name="path">The path containing vector snapshots.</param>
 /// <param name="filter">The filter controlling which operations are yielded.</param>
@@ -13,10 +13,10 @@ public sealed class Trace(Path path, Trace.Filter filter)
     /// </summary>
     /// <param name="n">The length of the original sequence.</param>
     /// <param name="m">The length of the modified sequence.</param>
-    /// <returns>An enumerable of <c>(X, Y, Op)</c> tuples describing each edit step.</returns>
-    public IEnumerable<(int X, int Y, Op Op)> Enumerate(int n, int m)
+    /// <returns>An enumerable of <see cref="Edit"/> records describing each edit step.</returns>
+    public IEnumerable<Edit> Enumerate(int n, int m)
     {
-        var stack = new Stack<(int X, int Y, Op Op)>();
+        var stack = new Stack<Edit>();
 
         var x = n;
         var y = m;
@@ -26,16 +26,16 @@ public sealed class Trace(Path path, Trace.Filter filter)
             switch (FindNearest(i, x, y))
             {
                 case (true, false):
-                    if (filter.HasFlag(Filter.Del)) stack.Push((x, y, Op.Del));
+                    if (filter.HasFlag(Filter.Del)) stack.Push(new Edit(x, y, Op.Del));
                     x--;
                     break;
                 case (false, true):
-                    if (filter.HasFlag(Filter.Ins)) stack.Push((x, y, Op.Ins));
+                    if (filter.HasFlag(Filter.Ins)) stack.Push(new Edit(x, y, Op.Ins));
                     y--;
                     break;
                 case (false, false):
                     i++;
-                    if (filter.HasFlag(Filter.Eq)) stack.Push((x, y, Op.Eq));
+                    if (filter.HasFlag(Filter.Eq)) stack.Push(new Edit(x, y, Op.Eq));
                     x--;
                     y--;
                     break;
@@ -48,7 +48,7 @@ public sealed class Trace(Path path, Trace.Filter filter)
         // that preceded the first snapshotted d-step.
         while (x > 0 && y > 0)
         {
-            if (filter.HasFlag(Filter.Eq)) stack.Push((x, y, Op.Eq));
+            if (filter.HasFlag(Filter.Eq)) stack.Push(new Edit(x, y, Op.Eq));
             x--;
             y--;
         }
@@ -75,20 +75,12 @@ public sealed class Trace(Path path, Trace.Filter filter)
     }
 
     /// <summary>
-    ///  Specifies which edit operations to include when enumerating the trace.
+    ///  Represents a single edit in the edit sequence.
     /// </summary>
-    [Flags]
-    public enum Filter
-    {
-        /// <summary>Includes delete operations.</summary>
-        Del = 1,
-
-        /// <summary>Includes insert operations.</summary>
-        Ins = 2,
-
-        /// <summary>Includes equal (diagonal) operations.</summary>
-        Eq = 4
-    }
+    /// <param name="X">The position in the original sequence (1-based for operations).</param>
+    /// <param name="Y">The position in the modified sequence (1-based for operations).</param>
+    /// <param name="Op">The type of operation: delete, insert, or equal.</param>
+    public readonly record struct Edit(int X, int Y, Op Op);
 
     /// <summary>
     ///  Represents the type of an edit operation.
@@ -103,5 +95,21 @@ public sealed class Trace(Path path, Trace.Filter filter)
 
         /// <summary>An element common to both sequences.</summary>
         Eq
+    }
+
+    /// <summary>
+    ///  Specifies which edit operations to include when enumerating the trace.
+    /// </summary>
+    [Flags]
+    public enum Filter
+    {
+        /// <summary>Includes delete operations.</summary>
+        Del = 1,
+
+        /// <summary>Includes insert operations.</summary>
+        Ins = 2,
+
+        /// <summary>Includes equal (diagonal) operations.</summary>
+        Eq = 4
     }
 }
