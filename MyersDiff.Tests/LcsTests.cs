@@ -83,4 +83,16 @@ public sealed class LcsTests
     {
         Assert.Equal("bcd", Lcs.Build("abcd", "bcd"));
     }
+
+    [Fact]
+    public void Test_Build_ExplicitComparer_String()
+    {
+        Assert.Equal("abc", Lcs.Build("abc", "ABC", ExplicitComparer.Instance));
+    }
+
+    [Fact]
+    public void Test_Build_ExplicitComparer()
+    {
+        Assert.Equal("abc", Lcs<char>.Build("abc", "ABC", ExplicitComparer.Instance));
+    }
 }

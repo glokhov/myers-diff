@@ -5,10 +5,12 @@ namespace MyersDiff;
 /// </summary>
 public sealed class Path
 {
+    private readonly List<Vector> _snapshots = [];
+
     /// <summary>
-    ///  The list of vector snapshots, one per d-step.
+    ///  The vector snapshots, one per d-step.
     /// </summary>
-    public List<Vector> Snapshots { get; } = [];
+    public IReadOnlyList<Vector> Snapshots => _snapshots;
 
     /// <summary>
     ///  Copies the current vector state for the given d-step and appends it to <see cref="Snapshots"/>.
@@ -17,6 +19,6 @@ public sealed class Path
     /// <param name="d">The current d-step value.</param>
     public void MakeSnapshot(Vector v, int d)
     {
-        Snapshots.Add(v.Copy(d));
+        _snapshots.Add(v.Copy(d));
     }
 }

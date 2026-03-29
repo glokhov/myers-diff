@@ -14,17 +14,17 @@ public static class Algorithm
     /// <param name="b">The modified sequence.</param>
     /// <param name="comparer">The equality comparer used to compare elements.</param>
     /// <returns>A <see cref="Path"/> containing vector snapshots from the forward pass.</returns>
-    public static Path LcsSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer) where T : IEquatable<T>
+    public static Path LcsSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer) where T : IEquatable<T>
     {
         var p = new Path();
 
-        var n = a.Length;
-        var m = b.Length;
-
-        if (n == 0 && m == 0)
+        if (a.SequenceEqual(b, comparer))
         {
             return p;
         }
+
+        var n = a.Length;
+        var m = b.Length;
 
         var max = n + m;
 

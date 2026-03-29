@@ -5,6 +5,7 @@ A C# implementation of [Eugene Myers' O(ND) difference algorithm](https://public
 ## Features
 
 - Generic — works with any element type via `ReadOnlySpan<T>`
+- Custom equality comparers via `IEqualityComparer<T>`
 - String convenience overloads for the common case
 - Zero external dependencies
 
@@ -18,7 +19,7 @@ string lcs = Lcs.Build("abcabba", "cbabac");
 // "caba"
 ```
 
-With a custom comparer:
+With an explicit comparer:
 
 ```csharp
 string lcs = Lcs.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
@@ -34,7 +35,7 @@ char[] lcs = Lcs<char>.Build("abcabba", "cbabac");
 // ['c', 'a', 'b', 'a']
 ```
 
-With a custom comparer:
+With an explicit comparer:
 
 ```csharp
 char[] lcs = Lcs<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
@@ -65,7 +66,7 @@ foreach (var cmd in ses)
 }
 ```
 
-With a custom comparer:
+With an explicit comparer:
 
 ```csharp
 Ses.Cmd[] ses = Ses.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
@@ -94,14 +95,13 @@ foreach (var cmd in ses)
 }
 ```
 
-With a custom comparer:
+With an explicit comparer:
 
 ```csharp
 Ses<char>.Cmd[] ses = Ses<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
 
 // [Del(1), Del(2), Ins(3, 'b'), Del(6), Ins(7, 'c')]
 ```
-
 
 ## Custom Trace Logic
 
@@ -117,7 +117,7 @@ var path = Algorithm.LcsSes(a, b, EqualityComparer<char>.Default);
 
 var trace = new Trace(path, Trace.Filter.Del | Trace.Filter.Ins | Trace.Filter.Eq);
 
-foreach (var edit in trace.Enumerate(a.Length, b.Length))
+foreach (var edit in trace.Build(a.Length, b.Length))
 {
     switch (edit.Op)
     {

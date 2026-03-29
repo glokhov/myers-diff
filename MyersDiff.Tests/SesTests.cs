@@ -218,4 +218,42 @@ public sealed class SesTests
 
         Assert.Equal([new Ses.Cmd.Del(1)], ses);
     }
+
+    [Fact]
+    public void Test_Build_ExplicitComparer_String_Identical()
+    {
+        Assert.Empty(Ses.Build("abc", "ABC", ExplicitComparer.Instance));
+    }
+
+    [Fact]
+    public void Test_Build_ExplicitComparer_Identical()
+    {
+        Assert.Empty(Ses<char>.Build("abc", "ABC", ExplicitComparer.Instance));
+    }
+
+    [Fact]
+    public void Test_Build_ExplicitComparer_String_Mixed()
+    {
+        var ses = Ses.Build("abX", "ABY", ExplicitComparer.Instance);
+
+        Assert.Equal(
+            [
+                new Ses.Cmd.Del(3),
+                new Ses.Cmd.Ins(3, 'Y')
+            ],
+            ses);
+    }
+
+    [Fact]
+    public void Test_Build_ExplicitComparer_Mixed()
+    {
+        var ses = Ses<char>.Build("abX", "ABY", ExplicitComparer.Instance);
+
+        Assert.Equal(
+            [
+                new Ses<char>.Cmd.Del(3),
+                new Ses<char>.Cmd.Ins(3, 'Y')
+            ],
+            ses);
+    }
 }

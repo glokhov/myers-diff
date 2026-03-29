@@ -17,13 +17,13 @@ public static class Ses
     }
 
     /// <summary>
-    ///  Builds the shortest edit script between two strings using a custom character comparer.
+    ///  Builds the shortest edit script between two strings using an explicit character comparer.
     /// </summary>
     /// <param name="a">The original string.</param>
     /// <param name="b">The modified string.</param>
     /// <param name="comparer">The equality comparer used to compare characters.</param>
     /// <returns>An array of edit commands that transform <paramref name="a"/> into <paramref name="b"/>.</returns>
-    public static Cmd[] Build(string a, string b, EqualityComparer<char> comparer)
+    public static Cmd[] Build(string a, string b, IEqualityComparer<char> comparer)
     {
         return Ses<char>.Build(a, b, comparer, CmdDel, CmdIns);
     }
@@ -38,15 +38,15 @@ public static class Ses
     public abstract record Cmd
     {
         /// <summary>
-        ///  A command to delete an element at the specified position.
+        ///  A command to delete a character at the specified position.
         /// </summary>
-        /// <param name="Pos">The 1-based position in the original sequence.</param>
+        /// <param name="Pos">The 1-based position in the original string.</param>
         public sealed record Del(int Pos) : Cmd;
 
         /// <summary>
         ///  A command to insert a character at the specified position.
         /// </summary>
-        /// <param name="Pos">The 1-based position in the original sequence after which to insert.</param>
+        /// <param name="Pos">The 1-based position in the original string after which to insert.</param>
         /// <param name="Item">The character to insert.</param>
         public sealed record Ins(int Pos, char Item) : Cmd;
     }
@@ -70,18 +70,18 @@ public static class Ses<T> where T : IEquatable<T>
     }
 
     /// <summary>
-    ///  Builds the shortest edit script between two sequences using a custom equality comparer.
+    ///  Builds the shortest edit script between two sequences using an explicit equality comparer.
     /// </summary>
     /// <param name="a">The original sequence.</param>
     /// <param name="b">The modified sequence.</param>
     /// <param name="comparer">The equality comparer used to compare elements.</param>
     /// <returns>An array of edit commands that transform <paramref name="a"/> into <paramref name="b"/>.</returns>
-    public static Cmd[] Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer)
+    public static Cmd[] Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer)
     {
         return Build(a, b, comparer, CmdDel, CmdIns);
     }
 
-    internal static TCmd[] Build<TCmd>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, EqualityComparer<T> comparer, Func<int, TCmd> del, Func<int, T, TCmd> ins)
+    internal static TCmd[] Build<TCmd>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer, Func<int, TCmd> del, Func<int, T, TCmd> ins)
     {
         var list = new List<TCmd>();
 
@@ -89,15 +89,15 @@ public static class Ses<T> where T : IEquatable<T>
 
         var trace = new Trace(path, Trace.Filter.Del | Trace.Filter.Ins);
 
-        foreach (var item in trace.Enumerate(a.Length, b.Length))
+        foreach (var edit in trace.Build(a.Length, b.Length))
         {
-            switch (item.Op)
+            switch (edit.Op)
             {
                 case Trace.Op.Del:
-                    list.Add(del(item.X));
+                    list.Add(del(edit.X));
                     break;
                 case Trace.Op.Ins:
-                    list.Add(ins(item.X, b[item.Y - 1]));
+                    list.Add(ins(edit.X, b[edit.Y - 1]));
                     break;
                 case Trace.Op.Eq:
                     break;

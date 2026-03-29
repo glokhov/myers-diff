@@ -70,4 +70,10 @@ public sealed class AlgorithmTests
     {
         Assert.Empty(Algorithm.LcsSes("", "", EqualityComparer<char>.Default).Snapshots);
     }
+
+    [Fact]
+    public void Test_LcsSes_ExplicitComparer()
+    {
+        Assert.Empty(Algorithm.LcsSes("abc", "ABC", ExplicitComparer.Instance).Snapshots);
+    }
 }
