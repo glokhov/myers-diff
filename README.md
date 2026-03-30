@@ -1,4 +1,4 @@
-# MyersDiff
+# Myers' difference algorithm [![Nuget Version](https://img.shields.io/nuget/v/MyersDiff)](https://www.nuget.org/packages/MyersDiff)
 
 A C# implementation of [Eugene Myers' O(ND) difference algorithm](https://publications.mpi-cbg.de/Myers_1986_6330.pdf) for computing the **Longest Common Subsequence (LCS)** and **Shortest Edit Script (SES)** between two sequences.
 
