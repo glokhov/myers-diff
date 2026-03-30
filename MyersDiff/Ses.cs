@@ -1,64 +1,10 @@
-﻿using System.Runtime.InteropServices;
-
-namespace MyersDiff;
-
-/// <summary>
-///  Shortest Edit Script — string convenience overloads.
-/// </summary>
-public static class Ses
-{
-    /// <summary>
-    ///  Builds the shortest edit script between two strings using the default character comparer.
-    /// </summary>
-    /// <param name="a">The original string.</param>
-    /// <param name="b">The modified string.</param>
-    /// <returns>A span of edit commands that transform <paramref name="a"/> into <paramref name="b"/>.</returns>
-    public static ReadOnlySpan<Cmd> Build(string a, string b)
-    {
-        return Build(a, b, EqualityComparer<char>.Default);
-    }
-
-    /// <summary>
-    ///  Builds the shortest edit script between two strings using an explicit character comparer.
-    /// </summary>
-    /// <param name="a">The original string.</param>
-    /// <param name="b">The modified string.</param>
-    /// <param name="comparer">The equality comparer used to compare characters.</param>
-    /// <returns>A span of edit commands that transform <paramref name="a"/> into <paramref name="b"/>.</returns>
-    public static ReadOnlySpan<Cmd> Build(string a, string b, IEqualityComparer<char> comparer)
-    {
-        return Ses<char>.Build(a, b, comparer, CmdDel, CmdIns);
-    }
-
-    private static Cmd CmdDel(int x) => new Cmd.Del(x);
-
-    private static Cmd CmdIns(int x, char c) => new Cmd.Ins(x, c);
-
-    /// <summary>
-    ///  Represents an edit command in the shortest edit script.
-    /// </summary>
-    public abstract record Cmd
-    {
-        /// <summary>
-        ///  A command to delete a character at the specified position.
-        /// </summary>
-        /// <param name="Pos">The 1-based position in the original string.</param>
-        public sealed record Del(int Pos) : Cmd;
-
-        /// <summary>
-        ///  A command to insert a character at the specified position.
-        /// </summary>
-        /// <param name="Pos">The 1-based position in the original string after which to insert.</param>
-        /// <param name="Item">The character to insert.</param>
-        public sealed record Ins(int Pos, char Item) : Cmd;
-    }
-}
+﻿namespace MyersDiff;
 
 /// <summary>
 ///  Shortest Edit Script — generic overloads.
 /// </summary>
 /// <typeparam name="T">The type of elements in the sequences.</typeparam>
-public static class Ses<T> where T : IEquatable<T>
+public static class Ses<T>
 {
     private const Trace.Filter Filter = Trace.Filter.Del | Trace.Filter.Ins;
 
@@ -67,8 +13,8 @@ public static class Ses<T> where T : IEquatable<T>
     /// </summary>
     /// <param name="a">The original sequence.</param>
     /// <param name="b">The modified sequence.</param>
-    /// <returns>A span of edit commands that transform <paramref name="a"/> into <paramref name="b"/>.</returns>
-    public static ReadOnlySpan<Cmd> Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b)
+    /// <returns>A list of edit commands that transform <paramref name="a"/> into <paramref name="b"/>.</returns>
+    public static List<Cmd> Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b)
     {
         return Build(a, b, EqualityComparer<T>.Default);
     }
@@ -79,15 +25,12 @@ public static class Ses<T> where T : IEquatable<T>
     /// <param name="a">The original sequence.</param>
     /// <param name="b">The modified sequence.</param>
     /// <param name="comparer">The equality comparer used to compare elements.</param>
-    /// <returns>A span of edit commands that transform <paramref name="a"/> into <paramref name="b"/>.</returns>
-    public static ReadOnlySpan<Cmd> Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer)
+    /// <returns>A list of edit commands that transform <paramref name="a"/> into <paramref name="b"/>.</returns>
+    public static List<Cmd> Build(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer)
     {
-        return Build(a, b, comparer, CmdDel, CmdIns);
-    }
+        ArgumentNullException.ThrowIfNull(comparer);
 
-    internal static ReadOnlySpan<TCmd> Build<TCmd>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer, Func<int, TCmd> del, Func<int, T, TCmd> ins)
-    {
-        var list = new List<TCmd>();
+        var list = new List<Cmd>();
 
         var path = Algorithm.LcsSes(a, b, comparer);
 
@@ -96,10 +39,10 @@ public static class Ses<T> where T : IEquatable<T>
             switch (edit.Op)
             {
                 case Trace.Op.Del:
-                    list.Add(del(edit.X));
+                    list.Add(new Cmd.Del(edit.X));
                     break;
                 case Trace.Op.Ins:
-                    list.Add(ins(edit.X, b[edit.Y - 1]));
+                    list.Add(new Cmd.Ins(edit.X, b[edit.Y - 1]));
                     break;
                 case Trace.Op.Eq:
                     break;
@@ -108,12 +51,8 @@ public static class Ses<T> where T : IEquatable<T>
             }
         }
 
-        return CollectionsMarshal.AsSpan(list);
+        return list;
     }
-
-    private static Cmd CmdDel(int x) => new Cmd.Del(x);
-
-    private static Cmd CmdIns(int x, T i) => new Cmd.Ins(x, i);
 
     /// <summary>
     ///  Represents an edit command in the shortest edit script.

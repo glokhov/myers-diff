@@ -6,31 +6,12 @@ A C# implementation of [Eugene Myers' O(ND) difference algorithm](https://public
 
 - Generic — works with any element type via `ReadOnlySpan<T>`
 - Custom equality comparers via `IEqualityComparer<T>`
-- String convenience overloads for the common case
 - Zero external dependencies
 
 ## Longest Common Subsequence
 
-### String
-
 ```csharp
-string lcs = Lcs.Build("abcabba", "cbabac");
-
-// "caba"
-```
-
-With an explicit comparer:
-
-```csharp
-string lcs = Lcs.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
-
-// "caba"
-```
-
-### Generic
-
-```csharp
-ReadOnlySpan<char> lcs = Lcs<char>.Build("abcabba", "cbabac");
+List<char> lcs = Lcs<char>.Build("abcabba", "cbabac");
 
 // ['c', 'a', 'b', 'a']
 ```
@@ -38,46 +19,15 @@ ReadOnlySpan<char> lcs = Lcs<char>.Build("abcabba", "cbabac");
 With an explicit comparer:
 
 ```csharp
-ReadOnlySpan<char> lcs = Lcs<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
+List<char> lcs = Lcs<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
 
 // ['c', 'a', 'b', 'a']
 ```
 
 ## Shortest Edit Script
 
-### String
-
 ```csharp
-ReadOnlySpan<Ses.Cmd> ses = Ses.Build("abcabba", "cbabac");
-
-// [Del(1), Del(2), Ins(3, 'b'), Del(6), Ins(7, 'c')]
-
-foreach (var cmd in ses)
-{
-    switch (cmd)
-    {
-        case Ses.Cmd.Del del:
-            Console.WriteLine($"Delete at position {del.Pos}");
-            break;
-        case Ses.Cmd.Ins ins:
-            Console.WriteLine($"Insert '{ins.Item}' at position {ins.Pos}");
-            break;
-    }
-}
-```
-
-With an explicit comparer:
-
-```csharp
-ReadOnlySpan<Ses.Cmd> ses = Ses.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
-
-// [Del(1), Del(2), Ins(3, 'b'), Del(6), Ins(7, 'c')]
-```
-
-### Generic
-
-```csharp
-ReadOnlySpan<Ses<char>.Cmd> ses = Ses<char>.Build("abcabba", "cbabac");
+List<Ses<char>.Cmd> ses = Ses<char>.Build("abcabba", "cbabac");
 
 // [Del(1), Del(2), Ins(3, 'b'), Del(6), Ins(7, 'c')]
 
@@ -98,7 +48,7 @@ foreach (var cmd in ses)
 With an explicit comparer:
 
 ```csharp
-ReadOnlySpan<Ses<char>.Cmd> ses = Ses<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
+List<Ses<char>.Cmd> ses = Ses<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
 
 // [Del(1), Del(2), Ins(3, 'b'), Del(6), Ins(7, 'c')]
 ```

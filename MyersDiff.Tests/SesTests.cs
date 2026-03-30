@@ -6,67 +6,6 @@ public sealed class SesTests
     private const string B = "cbabac";
 
     [Fact]
-    public void Test_Build_Comparer_String()
-    {
-        var ses = Ses.Build(A, B, EqualityComparer<char>.Default);
-
-        var a = new Ses.Cmd.Del(1);
-        var b = new Ses.Cmd.Del(2);
-        var c = new Ses.Cmd.Ins(3, 'b');
-        var d = new Ses.Cmd.Del(6);
-        var e = new Ses.Cmd.Ins(7, 'c');
-
-        Assert.Equal([a, b, c, d, e], ses);
-    }
-
-    [Fact]
-    public void Test_Build_String()
-    {
-        var ses = Ses.Build(A, B);
-
-        var a = new Ses.Cmd.Del(1);
-        var b = new Ses.Cmd.Del(2);
-        var c = new Ses.Cmd.Ins(3, 'b');
-        var d = new Ses.Cmd.Del(6);
-        var e = new Ses.Cmd.Ins(7, 'c');
-
-        Assert.Equal([a, b, c, d, e], ses);
-    }
-
-    [Fact]
-    public void Test_Cmd_Del_String()
-    {
-        Ses.Cmd cmd = new Ses.Cmd.Del(1);
-
-        switch (cmd)
-        {
-            case Ses.Cmd.Del del:
-                Assert.Equal(1, del.Pos);
-                break;
-            default:
-                Assert.Fail("Unexpected command.");
-                break;
-        }
-    }
-
-    [Fact]
-    public void Test_Cmd_Ins_String()
-    {
-        Ses.Cmd cmd = new Ses.Cmd.Ins(1, 'A');
-
-        switch (cmd)
-        {
-            case Ses.Cmd.Ins ins:
-                Assert.Equal(1, ins.Pos);
-                Assert.Equal('A', ins.Item);
-                break;
-            default:
-                Assert.Fail("Unexpected command.");
-                break;
-        }
-    }
-
-    [Fact]
     public void Test_Build()
     {
         var ses = Ses<char>.Build(A, B);
@@ -130,19 +69,19 @@ public sealed class SesTests
     [Fact]
     public void Test_Build_BothEmpty()
     {
-        Assert.True(Ses.Build("", "").IsEmpty);
+        Assert.Empty(Ses<char>.Build("", ""));
     }
 
     [Fact]
     public void Test_Build_FirstEmpty()
     {
-        var ses = Ses.Build("", "abc");
+        var ses = Ses<char>.Build("", "abc");
 
         Assert.Equal(
             [
-                new Ses.Cmd.Ins(0, 'a'),
-                new Ses.Cmd.Ins(0, 'b'),
-                new Ses.Cmd.Ins(0, 'c')
+                new Ses<char>.Cmd.Ins(0, 'a'),
+                new Ses<char>.Cmd.Ins(0, 'b'),
+                new Ses<char>.Cmd.Ins(0, 'c')
             ],
             ses);
     }
@@ -150,13 +89,13 @@ public sealed class SesTests
     [Fact]
     public void Test_Build_SecondEmpty()
     {
-        var ses = Ses.Build("abc", "");
+        var ses = Ses<char>.Build("abc", "");
 
         Assert.Equal(
             [
-                new Ses.Cmd.Del(1),
-                new Ses.Cmd.Del(2),
-                new Ses.Cmd.Del(3)
+                new Ses<char>.Cmd.Del(1),
+                new Ses<char>.Cmd.Del(2),
+                new Ses<char>.Cmd.Del(3)
             ],
             ses);
     }
@@ -164,22 +103,22 @@ public sealed class SesTests
     [Fact]
     public void Test_Build_Identical()
     {
-        Assert.True(Ses.Build("abc", "abc").IsEmpty);
+        Assert.Empty(Ses<char>.Build("abc", "abc"));
     }
 
     [Fact]
     public void Test_Build_Disjoint()
     {
-        var ses = Ses.Build("abc", "xyz");
+        var ses = Ses<char>.Build("abc", "xyz");
 
         Assert.Equal(
             [
-                new Ses.Cmd.Del(1),
-                new Ses.Cmd.Del(2),
-                new Ses.Cmd.Del(3),
-                new Ses.Cmd.Ins(3, 'x'),
-                new Ses.Cmd.Ins(3, 'y'),
-                new Ses.Cmd.Ins(3, 'z')
+                new Ses<char>.Cmd.Del(1),
+                new Ses<char>.Cmd.Del(2),
+                new Ses<char>.Cmd.Del(3),
+                new Ses<char>.Cmd.Ins(3, 'x'),
+                new Ses<char>.Cmd.Ins(3, 'y'),
+                new Ses<char>.Cmd.Ins(3, 'z')
             ],
             ses);
     }
@@ -187,18 +126,18 @@ public sealed class SesTests
     [Fact]
     public void Test_Build_SingleCharSame()
     {
-        Assert.True(Ses.Build("a", "a").IsEmpty);
+        Assert.Empty(Ses<char>.Build("a", "a"));
     }
 
     [Fact]
     public void Test_Build_SingleCharDifferent()
     {
-        var ses = Ses.Build("a", "b");
+        var ses = Ses<char>.Build("a", "b");
 
         Assert.Equal(
             [
-                new Ses.Cmd.Del(1),
-                new Ses.Cmd.Ins(1, 'b')
+                new Ses<char>.Cmd.Del(1),
+                new Ses<char>.Cmd.Ins(1, 'b')
             ],
             ses);
     }
@@ -206,42 +145,23 @@ public sealed class SesTests
     [Fact]
     public void Test_Build_Prefix()
     {
-        var ses = Ses.Build("abc", "abcd");
+        var ses = Ses<char>.Build("abc", "abcd");
 
-        Assert.Equal([new Ses.Cmd.Ins(3, 'd')], ses);
+        Assert.Equal([new Ses<char>.Cmd.Ins(3, 'd')], ses);
     }
 
     [Fact]
     public void Test_Build_Suffix()
     {
-        var ses = Ses.Build("abcd", "bcd");
+        var ses = Ses<char>.Build("abcd", "bcd");
 
-        Assert.Equal([new Ses.Cmd.Del(1)], ses);
-    }
-
-    [Fact]
-    public void Test_Build_ExplicitComparer_String_Identical()
-    {
-        Assert.True(Ses.Build("abc", "ABC", ExplicitComparer.Instance).IsEmpty);
+        Assert.Equal([new Ses<char>.Cmd.Del(1)], ses);
     }
 
     [Fact]
     public void Test_Build_ExplicitComparer_Identical()
     {
-        Assert.True(Ses<char>.Build("abc", "ABC", ExplicitComparer.Instance).IsEmpty);
-    }
-
-    [Fact]
-    public void Test_Build_ExplicitComparer_String_Mixed()
-    {
-        var ses = Ses.Build("abX", "ABY", ExplicitComparer.Instance);
-
-        Assert.Equal(
-            [
-                new Ses.Cmd.Del(3),
-                new Ses.Cmd.Ins(3, 'Y')
-            ],
-            ses);
+        Assert.Empty(Ses<char>.Build("abc", "ABC", ExplicitComparer.Instance));
     }
 
     [Fact]

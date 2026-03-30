@@ -16,8 +16,10 @@ public static class Algorithm
     /// <param name="b">The modified sequence.</param>
     /// <param name="comparer">The equality comparer used to compare elements.</param>
     /// <returns>A <see cref="Path"/> containing vector snapshots from the forward pass.</returns>
-    public static Path LcsSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer) where T : IEquatable<T>
+    public static Path LcsSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer)
     {
+        ArgumentNullException.ThrowIfNull(comparer);
+
         var n = a.Length;
         var m = b.Length;
 
@@ -69,8 +71,6 @@ public static class Algorithm
             p.MakeSnapshot(v, d);
         }
 
-        Debug.Fail("Unexpected end of algorithm.");
-
-        return p;
+        throw new UnreachableException();
     }
 }

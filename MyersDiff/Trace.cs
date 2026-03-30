@@ -12,18 +12,16 @@ public static class Trace
     /// <param name="path">The path containing vector snapshots.</param>
     /// <param name="filter">The filter controlling which operations are included.</param>
     /// <returns>A sequence of <see cref="Edit"/> records describing each edit step.</returns>
-    public static IEnumerable<Edit> EnumerateEdits(Path path, Filter filter)
+    public static Stack<Edit> EnumerateEdits(Path path, Filter filter)
     {
         var stack = new Stack<Edit>();
 
         var x = path.N;
         var y = path.M;
 
-        var snapshots = path.Snapshots;
-
-        for (var i = snapshots.Length - 1; i >= 0; i--)
+        for (var i = path.Snapshots.Count - 1; i >= 0; i--)
         {
-            switch (FindNearest(snapshots[i], x, y))
+            switch (FindNearest(path.Snapshots[i], x, y))
             {
                 case (true, false):
                     if (filter.HasFlag(Filter.Del)) stack.Push(new Edit(x, y, Op.Del));
