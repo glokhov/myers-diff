@@ -63,7 +63,7 @@ public static class Lcs<T> where T : IEquatable<T>
 
         var trace = new Trace(path, Trace.Filter.Eq);
 
-        foreach (var edit in trace.EnumerateEdits(a.Length, b.Length))
+        foreach (var edit in trace.EnumerateEdits())
         {
             list.Add(a[edit.X - 1]);
         }

@@ -117,7 +117,7 @@ var path = Algorithm.LcsSes(a, b, EqualityComparer<char>.Default);
 
 var trace = new Trace(path, Trace.Filter.Del | Trace.Filter.Ins | Trace.Filter.Eq);
 
-foreach (var edit in trace.EnumerateEdits(a.Length, b.Length))
+foreach (var edit in trace.EnumerateEdits())
 {
     switch (edit.Op)
     {

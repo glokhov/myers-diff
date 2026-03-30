@@ -18,10 +18,10 @@ public static class Algorithm
     /// <returns>A <see cref="Path"/> containing vector snapshots from the forward pass.</returns>
     public static Path LcsSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer) where T : IEquatable<T>
     {
-        var p = new Path();
-
         var n = a.Length;
         var m = b.Length;
+
+        var p = new Path(n, m);
 
         if (n is 0 && m is 0)
         {

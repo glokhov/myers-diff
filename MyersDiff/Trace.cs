@@ -11,15 +11,13 @@ public sealed class Trace(Path path, Trace.Filter filter)
     /// <summary>
     ///  Enumerates the edit operations in forward order.
     /// </summary>
-    /// <param name="n">The length of the original sequence.</param>
-    /// <param name="m">The length of the modified sequence.</param>
     /// <returns>A sequence of <see cref="Edit"/> records describing each edit step.</returns>
-    public IEnumerable<Edit> EnumerateEdits(int n, int m)
+    public IEnumerable<Edit> EnumerateEdits()
     {
         var stack = new Stack<Edit>();
 
-        var x = n;
-        var y = m;
+        var x = path.N;
+        var y = path.M;
 
         for (var i = path.Snapshots.Length - 1; i >= 0; i--)
         {

@@ -91,7 +91,7 @@ public static class Ses<T> where T : IEquatable<T>
 
         var trace = new Trace(path, Trace.Filter.Del | Trace.Filter.Ins);
 
-        foreach (var edit in trace.EnumerateEdits(a.Length, b.Length))
+        foreach (var edit in trace.EnumerateEdits())
         {
             switch (edit.Op)
             {
