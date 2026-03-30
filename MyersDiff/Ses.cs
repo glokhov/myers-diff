@@ -89,9 +89,9 @@ public static class Ses<T> where T : IEquatable<T>
 
         var path = Algorithm.LcsSes(a, b, comparer);
 
-        var trace = new Trace(path, Trace.Filter.Del | Trace.Filter.Ins);
+        var filter = Trace.Filter.Del | Trace.Filter.Ins;
 
-        foreach (var edit in trace.EnumerateEdits())
+        foreach (var edit in Trace.EnumerateEdits(path, filter))
         {
             switch (edit.Op)
             {

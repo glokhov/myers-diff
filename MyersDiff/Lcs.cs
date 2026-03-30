@@ -61,9 +61,9 @@ public static class Lcs<T> where T : IEquatable<T>
 
         var path = Algorithm.LcsSes(a, b, comparer);
 
-        var trace = new Trace(path, Trace.Filter.Eq);
+        var filter = Trace.Filter.Eq;
 
-        foreach (var edit in trace.EnumerateEdits())
+        foreach (var edit in Trace.EnumerateEdits(path, filter))
         {
             list.Add(a[edit.X - 1]);
         }

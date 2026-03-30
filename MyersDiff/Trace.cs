@@ -4,15 +4,15 @@ namespace MyersDiff;
 ///  Backtracks through vector snapshots to reconstruct the edit graph path,
 ///  returning <see cref="Edit"/> records for each step.
 /// </summary>
-/// <param name="path">The path containing vector snapshots.</param>
-/// <param name="filter">The filter controlling which operations are included.</param>
-public sealed class Trace(Path path, Trace.Filter filter)
+public static class Trace
 {
     /// <summary>
     ///  Enumerates the edit operations in forward order.
     /// </summary>
+    /// <param name="path">The path containing vector snapshots.</param>
+    /// <param name="filter">The filter controlling which operations are included.</param>
     /// <returns>A sequence of <see cref="Edit"/> records describing each edit step.</returns>
-    public IEnumerable<Edit> EnumerateEdits()
+    public static IEnumerable<Edit> EnumerateEdits(Path path, Filter filter)
     {
         var stack = new Stack<Edit>();
 
@@ -21,7 +21,7 @@ public sealed class Trace(Path path, Trace.Filter filter)
 
         for (var i = path.Snapshots.Length - 1; i >= 0; i--)
         {
-            switch (FindNearest(i, x, y))
+            switch (FindNearest(path.Snapshots[i], x, y))
             {
                 case (true, false):
                     if (filter.HasFlag(Filter.Del)) stack.Push(new Edit(x, y, Op.Del));
@@ -57,9 +57,8 @@ public sealed class Trace(Path path, Trace.Filter filter)
         }
     }
 
-    private (bool Left, bool Above) FindNearest(int i, int x, int y)
+    private static (bool Left, bool Above) FindNearest(Vector v, int x, int y)
     {
-        var v = path.Snapshots[i];
         var k = x - y;
 
         if (v.HasDiagonal(k + 1) && v[k + 1] == x)
