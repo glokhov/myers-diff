@@ -19,9 +19,11 @@ public static class Trace
         var x = path.N;
         var y = path.M;
 
-        for (var i = path.Snapshots.Length - 1; i >= 0; i--)
+        var snapshots = path.Snapshots;
+
+        for (var i = snapshots.Length - 1; i >= 0; i--)
         {
-            switch (FindNearest(path.Snapshots[i], x, y))
+            switch (FindNearest(snapshots[i], x, y))
             {
                 case (true, false):
                     if (filter.HasFlag(Filter.Del)) stack.Push(new Edit(x, y, Op.Del));
@@ -51,10 +53,7 @@ public static class Trace
             y--;
         }
 
-        foreach (var edit in stack)
-        {
-            yield return edit;
-        }
+        return stack;
     }
 
     private static (bool Left, bool Above) FindNearest(Vector v, int x, int y)

@@ -60,6 +60,8 @@ public static class Ses
 /// <typeparam name="T">The type of elements in the sequences.</typeparam>
 public static class Ses<T> where T : IEquatable<T>
 {
+    private const Trace.Filter Filter = Trace.Filter.Del | Trace.Filter.Ins;
+
     /// <summary>
     ///  Builds the shortest edit script between two sequences using the default equality comparer.
     /// </summary>
@@ -89,9 +91,7 @@ public static class Ses<T> where T : IEquatable<T>
 
         var path = Algorithm.LcsSes(a, b, comparer);
 
-        var filter = Trace.Filter.Del | Trace.Filter.Ins;
-
-        foreach (var edit in Trace.EnumerateEdits(path, filter))
+        foreach (var edit in Trace.EnumerateEdits(path, Filter))
         {
             switch (edit.Op)
             {
