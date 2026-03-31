@@ -20,12 +20,18 @@ public sealed class Path(int n, int m)
     public int M { get; } = m;
 
     /// <summary>
-    ///  The vector snapshots, one per d-step.
+    ///  The number of vector snapshots recorded during the forward pass.
     /// </summary>
-    public IReadOnlyList<Vector> Snapshots => _snapshots;
+    public int Length => _snapshots.Count;
 
     /// <summary>
-    ///  Copies the current vector state for the given d-step and appends it to <see cref="Snapshots"/>.
+    ///  Gets the vector snapshot at the specified d-step index.
+    /// </summary>
+    /// <param name="i">The zero-based d-step index.</param>
+    public Vector this[int i] => _snapshots[i];
+
+    /// <summary>
+    ///  Copies the current vector state for the given d-step and appends it as a new snapshot.
     /// </summary>
     /// <param name="v">The vector to make a snapshot from.</param>
     /// <param name="d">The current d-step value.</param>

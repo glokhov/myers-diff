@@ -19,9 +19,9 @@ public static class Trace
         var x = path.N;
         var y = path.M;
 
-        for (var i = path.Snapshots.Count - 1; i >= 0; i--)
+        for (var i = path.Length - 1; i >= 0; i--)
         {
-            switch (FindNearest(path.Snapshots[i], x, y))
+            switch (FindNearest(path[i], x, y))
             {
                 case (true, false):
                     if (filter.HasFlag(Filter.Del)) stack.Push(new Edit(x, y, Op.Del));
