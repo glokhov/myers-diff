@@ -1,7 +1,7 @@
 ﻿namespace MyersDiff;
 
 /// <summary>
-///  Shortest Edit Script — generic overloads.
+///  Shortest Edit Script.
 /// </summary>
 /// <typeparam name="T">The type of elements in the sequences.</typeparam>
 public static class Ses<T>
@@ -34,7 +34,7 @@ public static class Ses<T>
 
         var path = Algorithm.LcsSes(a, b, comparer);
 
-        foreach (var edit in Trace.EnumerateEdits(path, Filter))
+        foreach (var edit in Trace.GetEdits(path, Filter))
         {
             switch (edit.Op)
             {
@@ -69,7 +69,7 @@ public static class Ses<T>
         ///  A command to insert an element at the specified position.
         /// </summary>
         /// <param name="Pos">The 1-based position in the original sequence after which to insert.</param>
-        /// <param name="Item">The element to insert.</param>
-        public sealed record Ins(int Pos, T Item) : Cmd;
+        /// <param name="El">The element to insert.</param>
+        public sealed record Ins(int Pos, T El) : Cmd;
     }
 }

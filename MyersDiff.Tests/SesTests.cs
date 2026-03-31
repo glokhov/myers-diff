@@ -58,7 +58,7 @@ public sealed class SesTests
         {
             case Ses<char>.Cmd.Ins ins:
                 Assert.Equal(1, ins.Pos);
-                Assert.Equal('A', ins.Item);
+                Assert.Equal('A', ins.El);
                 break;
             default:
                 Assert.Fail("Unexpected command.");

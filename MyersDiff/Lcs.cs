@@ -1,7 +1,7 @@
 ﻿namespace MyersDiff;
 
 /// <summary>
-///  Longest Common Subsequence — generic overloads.
+///  Longest Common Subsequence.
 /// </summary>
 /// <typeparam name="T">The type of elements in the sequences.</typeparam>
 public static class Lcs<T>
@@ -34,7 +34,7 @@ public static class Lcs<T>
 
         var path = Algorithm.LcsSes(a, b, comparer);
 
-        foreach (var edit in Trace.EnumerateEdits(path, Filter))
+        foreach (var edit in Trace.GetEdits(path, Filter))
         {
             list.Add(a[edit.X - 1]);
         }

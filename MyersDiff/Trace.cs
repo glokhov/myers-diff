@@ -7,12 +7,12 @@ namespace MyersDiff;
 public static class Trace
 {
     /// <summary>
-    ///  Enumerates the edit operations in forward order.
+    ///  Returns the edit operations in forward order.
     /// </summary>
     /// <param name="path">The path containing vector snapshots.</param>
     /// <param name="filter">The filter controlling which operations are included.</param>
-    /// <returns>A sequence of <see cref="Edit"/> records describing each edit step.</returns>
-    public static Stack<Edit> EnumerateEdits(Path path, Filter filter)
+    /// <returns>A stack of <see cref="Edit"/> records describing each edit step.</returns>
+    public static Stack<Edit> GetEdits(Path path, Filter filter)
     {
         var stack = new Stack<Edit>();
 

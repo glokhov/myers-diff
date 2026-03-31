@@ -11,7 +11,7 @@ public sealed class TraceTests
     {
         var path = Algorithm.LcsSes(A, B, EqualityComparer<char>.Default);
 
-        var edits = Trace.EnumerateEdits(path, Filter);
+        var edits = Trace.GetEdits(path, Filter);
 
         Assert.Equal(
             [
@@ -33,7 +33,7 @@ public sealed class TraceTests
     {
         var path = Algorithm.LcsSes("", "", EqualityComparer<char>.Default);
 
-        var edits = Trace.EnumerateEdits(path, Filter);
+        var edits = Trace.GetEdits(path, Filter);
 
         Assert.Empty(edits);
     }
@@ -43,7 +43,7 @@ public sealed class TraceTests
     {
         var path = Algorithm.LcsSes("", "abc", EqualityComparer<char>.Default);
 
-        var edits = Trace.EnumerateEdits(path, Filter);
+        var edits = Trace.GetEdits(path, Filter);
 
         Assert.Equal(
             [
@@ -59,7 +59,7 @@ public sealed class TraceTests
     {
         var path = Algorithm.LcsSes("abc", "", EqualityComparer<char>.Default);
 
-        var edits = Trace.EnumerateEdits(path, Filter);
+        var edits = Trace.GetEdits(path, Filter);
 
         Assert.Equal(
             [
@@ -75,7 +75,7 @@ public sealed class TraceTests
     {
         var path = Algorithm.LcsSes("abc", "abc", EqualityComparer<char>.Default);
 
-        var edits = Trace.EnumerateEdits(path, Filter);
+        var edits = Trace.GetEdits(path, Filter);
 
         Assert.Equal(
             [
@@ -91,7 +91,7 @@ public sealed class TraceTests
     {
         var path = Algorithm.LcsSes("abc", "xyz", EqualityComparer<char>.Default);
 
-        var edits = Trace.EnumerateEdits(path, Filter);
+        var edits = Trace.GetEdits(path, Filter);
 
         Assert.Equal(
             [
@@ -110,7 +110,7 @@ public sealed class TraceTests
     {
         var path = Algorithm.LcsSes("a", "b", EqualityComparer<char>.Default);
 
-        var edits = Trace.EnumerateEdits(path, Filter);
+        var edits = Trace.GetEdits(path, Filter);
 
         Assert.Equal(
             [
@@ -125,7 +125,7 @@ public sealed class TraceTests
     {
         var path = Algorithm.LcsSes("abX", "ABY", ExplicitComparer.Instance);
 
-        var edits = Trace.EnumerateEdits(path, Filter);
+        var edits = Trace.GetEdits(path, Filter);
 
         Assert.Equal(
             [

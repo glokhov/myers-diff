@@ -39,7 +39,7 @@ foreach (var cmd in ses)
             Console.WriteLine($"Delete at position {del.Pos}");
             break;
         case Ses<char>.Cmd.Ins ins:
-            Console.WriteLine($"Insert '{ins.Item}' at position {ins.Pos}");
+            Console.WriteLine($"Insert '{ins.El}' at position {ins.Pos}");
             break;
     }
 }
@@ -67,7 +67,7 @@ var path = Algorithm.LcsSes(a, b, EqualityComparer<char>.Default);
 
 var filter = Trace.Filter.Del | Trace.Filter.Ins | Trace.Filter.Eq;
 
-foreach (var edit in Trace.EnumerateEdits(path, filter))
+foreach (var edit in Trace.GetEdits(path, filter))
 {
     switch (edit.Op)
     {
