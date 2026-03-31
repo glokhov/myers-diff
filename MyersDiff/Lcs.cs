@@ -6,7 +6,7 @@
 /// <typeparam name="T">The type of elements in the sequences.</typeparam>
 public static class Lcs<T>
 {
-    private const Trace.Filter Filter = Trace.Filter.Eq;
+    private const Trace.Operation Operation = Trace.Operation.Equal;
 
     /// <summary>
     ///  Builds the longest common subsequence of two sequences using the default equality comparer.
@@ -34,7 +34,7 @@ public static class Lcs<T>
 
         var path = Algorithm.LcsSes(a, b, comparer);
 
-        foreach (var edit in Trace.GetEdits(path, Filter))
+        foreach (var edit in Trace.GetEdits(path, Operation))
         {
             list.Add(a[edit.X - 1]);
         }

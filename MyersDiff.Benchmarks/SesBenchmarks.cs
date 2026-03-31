@@ -31,7 +31,7 @@ public class SesBenchmarks
     }
 
     [Benchmark]
-    public List<Ses<char>.Cmd> Build()
+    public List<Ses<char>.Command> Build()
     {
         return Ses<char>.Build(_original, _modified, EqualityComparer<char>.Default);
     }

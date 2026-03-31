@@ -10,11 +10,11 @@ public sealed class SesTests
     {
         var ses = Ses<char>.Build(A, B);
 
-        var a = new Ses<char>.Cmd.Del(1);
-        var b = new Ses<char>.Cmd.Del(2);
-        var c = new Ses<char>.Cmd.Ins(3, 'b');
-        var d = new Ses<char>.Cmd.Del(6);
-        var e = new Ses<char>.Cmd.Ins(7, 'c');
+        var a = new Ses<char>.Command.Delete(1);
+        var b = new Ses<char>.Command.Delete(2);
+        var c = new Ses<char>.Command.Insert(3, 'b');
+        var d = new Ses<char>.Command.Delete(6);
+        var e = new Ses<char>.Command.Insert(7, 'c');
 
         Assert.Equal([a, b, c, d, e], ses);
     }
@@ -24,11 +24,11 @@ public sealed class SesTests
     {
         var ses = Ses<char>.Build(A, B, EqualityComparer<char>.Default);
 
-        var a = new Ses<char>.Cmd.Del(1);
-        var b = new Ses<char>.Cmd.Del(2);
-        var c = new Ses<char>.Cmd.Ins(3, 'b');
-        var d = new Ses<char>.Cmd.Del(6);
-        var e = new Ses<char>.Cmd.Ins(7, 'c');
+        var a = new Ses<char>.Command.Delete(1);
+        var b = new Ses<char>.Command.Delete(2);
+        var c = new Ses<char>.Command.Insert(3, 'b');
+        var d = new Ses<char>.Command.Delete(6);
+        var e = new Ses<char>.Command.Insert(7, 'c');
 
         Assert.Equal([a, b, c, d, e], ses);
     }
@@ -36,12 +36,12 @@ public sealed class SesTests
     [Fact]
     public void Test_Cmd_Del()
     {
-        Ses<char>.Cmd cmd = new Ses<char>.Cmd.Del(1);
+        Ses<char>.Command command = new Ses<char>.Command.Delete(1);
 
-        switch (cmd)
+        switch (command)
         {
-            case Ses<char>.Cmd.Del del:
-                Assert.Equal(1, del.Pos);
+            case Ses<char>.Command.Delete del:
+                Assert.Equal(1, del.Position);
                 break;
             default:
                 Assert.Fail("Unexpected command.");
@@ -52,13 +52,13 @@ public sealed class SesTests
     [Fact]
     public void Test_Cmd_Ins()
     {
-        Ses<char>.Cmd cmd = new Ses<char>.Cmd.Ins(1, 'A');
+        Ses<char>.Command command = new Ses<char>.Command.Insert(1, 'A');
 
-        switch (cmd)
+        switch (command)
         {
-            case Ses<char>.Cmd.Ins ins:
-                Assert.Equal(1, ins.Pos);
-                Assert.Equal('A', ins.El);
+            case Ses<char>.Command.Insert ins:
+                Assert.Equal(1, ins.Position);
+                Assert.Equal('A', ins.Element);
                 break;
             default:
                 Assert.Fail("Unexpected command.");
@@ -79,9 +79,9 @@ public sealed class SesTests
 
         Assert.Equal(
             [
-                new Ses<char>.Cmd.Ins(0, 'a'),
-                new Ses<char>.Cmd.Ins(0, 'b'),
-                new Ses<char>.Cmd.Ins(0, 'c')
+                new Ses<char>.Command.Insert(0, 'a'),
+                new Ses<char>.Command.Insert(0, 'b'),
+                new Ses<char>.Command.Insert(0, 'c')
             ],
             ses);
     }
@@ -93,9 +93,9 @@ public sealed class SesTests
 
         Assert.Equal(
             [
-                new Ses<char>.Cmd.Del(1),
-                new Ses<char>.Cmd.Del(2),
-                new Ses<char>.Cmd.Del(3)
+                new Ses<char>.Command.Delete(1),
+                new Ses<char>.Command.Delete(2),
+                new Ses<char>.Command.Delete(3)
             ],
             ses);
     }
@@ -113,12 +113,12 @@ public sealed class SesTests
 
         Assert.Equal(
             [
-                new Ses<char>.Cmd.Del(1),
-                new Ses<char>.Cmd.Del(2),
-                new Ses<char>.Cmd.Del(3),
-                new Ses<char>.Cmd.Ins(3, 'x'),
-                new Ses<char>.Cmd.Ins(3, 'y'),
-                new Ses<char>.Cmd.Ins(3, 'z')
+                new Ses<char>.Command.Delete(1),
+                new Ses<char>.Command.Delete(2),
+                new Ses<char>.Command.Delete(3),
+                new Ses<char>.Command.Insert(3, 'x'),
+                new Ses<char>.Command.Insert(3, 'y'),
+                new Ses<char>.Command.Insert(3, 'z')
             ],
             ses);
     }
@@ -136,8 +136,8 @@ public sealed class SesTests
 
         Assert.Equal(
             [
-                new Ses<char>.Cmd.Del(1),
-                new Ses<char>.Cmd.Ins(1, 'b')
+                new Ses<char>.Command.Delete(1),
+                new Ses<char>.Command.Insert(1, 'b')
             ],
             ses);
     }
@@ -147,7 +147,7 @@ public sealed class SesTests
     {
         var ses = Ses<char>.Build("abc", "abcd");
 
-        Assert.Equal([new Ses<char>.Cmd.Ins(3, 'd')], ses);
+        Assert.Equal([new Ses<char>.Command.Insert(3, 'd')], ses);
     }
 
     [Fact]
@@ -155,7 +155,7 @@ public sealed class SesTests
     {
         var ses = Ses<char>.Build("abcd", "bcd");
 
-        Assert.Equal([new Ses<char>.Cmd.Del(1)], ses);
+        Assert.Equal([new Ses<char>.Command.Delete(1)], ses);
     }
 
     [Fact]
@@ -171,8 +171,8 @@ public sealed class SesTests
 
         Assert.Equal(
             [
-                new Ses<char>.Cmd.Del(3),
-                new Ses<char>.Cmd.Ins(3, 'Y')
+                new Ses<char>.Command.Delete(3),
+                new Ses<char>.Command.Insert(3, 'Y')
             ],
             ses);
     }

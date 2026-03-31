@@ -4,26 +4,26 @@ public sealed class TraceTests
 {
     private const string A = "abcabba";
     private const string B = "cbabac";
-    private const Trace.Filter Filter = Trace.Filter.Del | Trace.Filter.Ins | Trace.Filter.Eq;
+    private const Trace.Operation Operation = Trace.Operation.Delete | Trace.Operation.Insert | Trace.Operation.Equal;
 
     [Fact]
     public void Test_Enumerate()
     {
         var path = Algorithm.LcsSes(A, B, EqualityComparer<char>.Default);
 
-        var edits = Trace.GetEdits(path, Filter);
+        var edits = Trace.GetEdits(path, Operation);
 
         Assert.Equal(
             [
-                new Trace.Edit(1, 0, Trace.Op.Del),
-                new Trace.Edit(2, 0, Trace.Op.Del),
-                new Trace.Edit(3, 1, Trace.Op.Eq),
-                new Trace.Edit(3, 2, Trace.Op.Ins),
-                new Trace.Edit(4, 3, Trace.Op.Eq),
-                new Trace.Edit(5, 4, Trace.Op.Eq),
-                new Trace.Edit(6, 4, Trace.Op.Del),
-                new Trace.Edit(7, 5, Trace.Op.Eq),
-                new Trace.Edit(7, 6, Trace.Op.Ins)
+                new Trace.Edit(1, 0, Trace.Operation.Delete),
+                new Trace.Edit(2, 0, Trace.Operation.Delete),
+                new Trace.Edit(3, 1, Trace.Operation.Equal),
+                new Trace.Edit(3, 2, Trace.Operation.Insert),
+                new Trace.Edit(4, 3, Trace.Operation.Equal),
+                new Trace.Edit(5, 4, Trace.Operation.Equal),
+                new Trace.Edit(6, 4, Trace.Operation.Delete),
+                new Trace.Edit(7, 5, Trace.Operation.Equal),
+                new Trace.Edit(7, 6, Trace.Operation.Insert)
             ],
             edits);
     }
@@ -33,7 +33,7 @@ public sealed class TraceTests
     {
         var path = Algorithm.LcsSes("", "", EqualityComparer<char>.Default);
 
-        var edits = Trace.GetEdits(path, Filter);
+        var edits = Trace.GetEdits(path, Operation);
 
         Assert.Empty(edits);
     }
@@ -43,13 +43,13 @@ public sealed class TraceTests
     {
         var path = Algorithm.LcsSes("", "abc", EqualityComparer<char>.Default);
 
-        var edits = Trace.GetEdits(path, Filter);
+        var edits = Trace.GetEdits(path, Operation);
 
         Assert.Equal(
             [
-                new Trace.Edit(0, 1, Trace.Op.Ins),
-                new Trace.Edit(0, 2, Trace.Op.Ins),
-                new Trace.Edit(0, 3, Trace.Op.Ins)
+                new Trace.Edit(0, 1, Trace.Operation.Insert),
+                new Trace.Edit(0, 2, Trace.Operation.Insert),
+                new Trace.Edit(0, 3, Trace.Operation.Insert)
             ],
             edits);
     }
@@ -59,13 +59,13 @@ public sealed class TraceTests
     {
         var path = Algorithm.LcsSes("abc", "", EqualityComparer<char>.Default);
 
-        var edits = Trace.GetEdits(path, Filter);
+        var edits = Trace.GetEdits(path, Operation);
 
         Assert.Equal(
             [
-                new Trace.Edit(1, 0, Trace.Op.Del),
-                new Trace.Edit(2, 0, Trace.Op.Del),
-                new Trace.Edit(3, 0, Trace.Op.Del)
+                new Trace.Edit(1, 0, Trace.Operation.Delete),
+                new Trace.Edit(2, 0, Trace.Operation.Delete),
+                new Trace.Edit(3, 0, Trace.Operation.Delete)
             ],
             edits);
     }
@@ -75,13 +75,13 @@ public sealed class TraceTests
     {
         var path = Algorithm.LcsSes("abc", "abc", EqualityComparer<char>.Default);
 
-        var edits = Trace.GetEdits(path, Filter);
+        var edits = Trace.GetEdits(path, Operation);
 
         Assert.Equal(
             [
-                new Trace.Edit(1, 1, Trace.Op.Eq),
-                new Trace.Edit(2, 2, Trace.Op.Eq),
-                new Trace.Edit(3, 3, Trace.Op.Eq)
+                new Trace.Edit(1, 1, Trace.Operation.Equal),
+                new Trace.Edit(2, 2, Trace.Operation.Equal),
+                new Trace.Edit(3, 3, Trace.Operation.Equal)
             ],
             edits);
     }
@@ -91,16 +91,16 @@ public sealed class TraceTests
     {
         var path = Algorithm.LcsSes("abc", "xyz", EqualityComparer<char>.Default);
 
-        var edits = Trace.GetEdits(path, Filter);
+        var edits = Trace.GetEdits(path, Operation);
 
         Assert.Equal(
             [
-                new Trace.Edit(1, 0, Trace.Op.Del),
-                new Trace.Edit(2, 0, Trace.Op.Del),
-                new Trace.Edit(3, 0, Trace.Op.Del),
-                new Trace.Edit(3, 1, Trace.Op.Ins),
-                new Trace.Edit(3, 2, Trace.Op.Ins),
-                new Trace.Edit(3, 3, Trace.Op.Ins)
+                new Trace.Edit(1, 0, Trace.Operation.Delete),
+                new Trace.Edit(2, 0, Trace.Operation.Delete),
+                new Trace.Edit(3, 0, Trace.Operation.Delete),
+                new Trace.Edit(3, 1, Trace.Operation.Insert),
+                new Trace.Edit(3, 2, Trace.Operation.Insert),
+                new Trace.Edit(3, 3, Trace.Operation.Insert)
             ],
             edits);
     }
@@ -110,12 +110,12 @@ public sealed class TraceTests
     {
         var path = Algorithm.LcsSes("a", "b", EqualityComparer<char>.Default);
 
-        var edits = Trace.GetEdits(path, Filter);
+        var edits = Trace.GetEdits(path, Operation);
 
         Assert.Equal(
             [
-                new Trace.Edit(1, 0, Trace.Op.Del),
-                new Trace.Edit(1, 1, Trace.Op.Ins)
+                new Trace.Edit(1, 0, Trace.Operation.Delete),
+                new Trace.Edit(1, 1, Trace.Operation.Insert)
             ],
             edits);
     }
@@ -125,14 +125,14 @@ public sealed class TraceTests
     {
         var path = Algorithm.LcsSes("abX", "ABY", ExplicitComparer.Instance);
 
-        var edits = Trace.GetEdits(path, Filter);
+        var edits = Trace.GetEdits(path, Operation);
 
         Assert.Equal(
             [
-                new Trace.Edit(1, 1, Trace.Op.Eq),
-                new Trace.Edit(2, 2, Trace.Op.Eq),
-                new Trace.Edit(3, 2, Trace.Op.Del),
-                new Trace.Edit(3, 3, Trace.Op.Ins)
+                new Trace.Edit(1, 1, Trace.Operation.Equal),
+                new Trace.Edit(2, 2, Trace.Operation.Equal),
+                new Trace.Edit(3, 2, Trace.Operation.Delete),
+                new Trace.Edit(3, 3, Trace.Operation.Insert)
             ],
             edits);
     }
