@@ -11,7 +11,7 @@ A C# implementation of [Eugene Myers' O(ND) difference algorithm](https://public
 ## Longest Common Subsequence
 
 ```csharp
-List<char> lcs = Lcs<char>.Build("abcabba", "cbabac");
+List<char> subsequence = Lcs<char>.Build("abcabba", "cbabac");
 
 // ['c', 'a', 'b', 'a']
 ```
@@ -19,7 +19,7 @@ List<char> lcs = Lcs<char>.Build("abcabba", "cbabac");
 With an explicit comparer:
 
 ```csharp
-List<char> lcs = Lcs<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
+List<char> subsequence = Lcs<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
 
 // ['c', 'a', 'b', 'a']
 ```
@@ -27,19 +27,19 @@ List<char> lcs = Lcs<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Def
 ## Shortest Edit Script
 
 ```csharp
-List<Ses<char>.Cmd> ses = Ses<char>.Build("abcabba", "cbabac");
+List<Ses<char>.Command> script = Ses<char>.Build("abcabba", "cbabac");
 
-// [Del(1), Del(2), Ins(3, 'b'), Del(6), Ins(7, 'c')]
+// [Delete(1), Delete(2), Insert(3, 'b'), Delete(6), Insert(7, 'c')]
 
-foreach (var cmd in ses)
+foreach (var command in script)
 {
-    switch (cmd)
+    switch (command)
     {
-        case Ses<char>.Cmd.Del del:
-            Console.WriteLine($"Delete at position {del.Pos}");
+        case Ses<char>.Command.Delete delete:
+            Console.WriteLine($"Delete at position {delete.Position}");
             break;
-        case Ses<char>.Cmd.Ins ins:
-            Console.WriteLine($"Insert '{ins.El}' at position {ins.Pos}");
+        case Ses<char>.Command.Insert insert:
+            Console.WriteLine($"Insert '{insert.Element}' at position {insert.Position}");
             break;
     }
 }
@@ -48,9 +48,9 @@ foreach (var cmd in ses)
 With an explicit comparer:
 
 ```csharp
-List<Ses<char>.Cmd> ses = Ses<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
+List<Ses<char>.Command> script = Ses<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
 
-// [Del(1), Del(2), Ins(3, 'b'), Del(6), Ins(7, 'c')]
+// [Delete(1), Delete(2), Insert(3, 'b'), Delete(6), Insert(7, 'c')]
 ```
 
 ## Custom Trace Logic
@@ -65,19 +65,19 @@ string b = "cbabac";
 
 var path = Algorithm.LcsSes(a, b, EqualityComparer<char>.Default);
 
-var filter = Trace.Filter.Del | Trace.Filter.Ins | Trace.Filter.Eq;
+var operation = Trace.Operation.Delete | Trace.Operation.Insert | Trace.Operation.Equal;
 
-foreach (var edit in Trace.GetEdits(path, filter))
+foreach (var edit in Trace.GetEdits(path, operation))
 {
-    switch (edit.Op)
+    switch (edit.Operation)
     {
-        case Trace.Op.Del:
+        case Trace.Operation.Delete:
             Console.WriteLine($"- {a[edit.X - 1]}");
             break;
-        case Trace.Op.Ins:
+        case Trace.Operation.Insert:
             Console.WriteLine($"+ {b[edit.Y - 1]}");
             break;
-        case Trace.Op.Eq:
+        case Trace.Operation.Equal:
             Console.WriteLine($"  {a[edit.X - 1]}");
             break;
     }
