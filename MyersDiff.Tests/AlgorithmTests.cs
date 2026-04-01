@@ -2,11 +2,18 @@ namespace MyersDiff.Tests;
 
 public sealed class AlgorithmTests
 {
+    //                        1234567
     private const string A = "abcabba";
     private const string B = "cbabac";
 
     [Fact]
-    public void Test_LcsSes()
+    public void Test_GetMiddleSnake()
+    {
+        Assert.Equal(new Snake(new Endpoint(3, 2), new Endpoint(5, 4)), Algorithm.GetMiddleSnake(A, B, EqualityComparer<char>.Default));
+    }
+
+    [Fact]
+    public void Test_ShortestScript()
     {
         var path = Algorithm.LcsSes(A, B, EqualityComparer<char>.Default);
 
