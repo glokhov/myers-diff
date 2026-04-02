@@ -1,4 +1,4 @@
-﻿namespace MyersDiff.Tests;
+namespace MyersDiff.Tests;
 
 public sealed class ComputeSesTests
 {
@@ -10,11 +10,11 @@ public sealed class ComputeSesTests
     {
         var ses = Algorithm.ComputeSes<char>(A, B);
 
-        var a = new Command<char>.Insert(0, 'c');
-        var b = new Command<char>.Delete(1);
-        var c = new Command<char>.Delete(3);
-        var d = new Command<char>.Delete(6);
-        var e = new Command<char>.Insert(7, 'c');
+        var a = new Edit<char>.Insert(0, 'c');
+        var b = new Edit<char>.Delete(1);
+        var c = new Edit<char>.Delete(3);
+        var d = new Edit<char>.Delete(6);
+        var e = new Edit<char>.Insert(7, 'c');
 
         Assert.Equal([a, b, c, d, e], ses);
     }
@@ -24,11 +24,11 @@ public sealed class ComputeSesTests
     {
         var ses = Algorithm.ComputeSes(A, B, EqualityComparer<char>.Default);
 
-        var a = new Command<char>.Insert(0, 'c');
-        var b = new Command<char>.Delete(1);
-        var c = new Command<char>.Delete(3);
-        var d = new Command<char>.Delete(6);
-        var e = new Command<char>.Insert(7, 'c');
+        var a = new Edit<char>.Insert(0, 'c');
+        var b = new Edit<char>.Delete(1);
+        var c = new Edit<char>.Delete(3);
+        var d = new Edit<char>.Delete(6);
+        var e = new Edit<char>.Insert(7, 'c');
 
         Assert.Equal([a, b, c, d, e], ses);
     }
@@ -46,9 +46,9 @@ public sealed class ComputeSesTests
 
         Assert.Equal(
             [
-                new Command<char>.Insert(0, 'a'),
-                new Command<char>.Insert(0, 'b'),
-                new Command<char>.Insert(0, 'c')
+                new Edit<char>.Insert(0, 'a'),
+                new Edit<char>.Insert(0, 'b'),
+                new Edit<char>.Insert(0, 'c')
             ],
             ses);
     }
@@ -60,9 +60,9 @@ public sealed class ComputeSesTests
 
         Assert.Equal(
             [
-                new Command<char>.Delete(1),
-                new Command<char>.Delete(2),
-                new Command<char>.Delete(3)
+                new Edit<char>.Delete(1),
+                new Edit<char>.Delete(2),
+                new Edit<char>.Delete(3)
             ],
             ses);
     }
@@ -80,12 +80,12 @@ public sealed class ComputeSesTests
 
         Assert.Equal(
             [
-                new Command<char>.Insert(0, 'x'),
-                new Command<char>.Insert(0, 'y'),
-                new Command<char>.Insert(0, 'z'),
-                new Command<char>.Delete(1),
-                new Command<char>.Delete(2),
-                new Command<char>.Delete(3)
+                new Edit<char>.Insert(0, 'x'),
+                new Edit<char>.Insert(0, 'y'),
+                new Edit<char>.Insert(0, 'z'),
+                new Edit<char>.Delete(1),
+                new Edit<char>.Delete(2),
+                new Edit<char>.Delete(3)
             ],
             ses);
     }
@@ -103,8 +103,8 @@ public sealed class ComputeSesTests
 
         Assert.Equal(
             [
-                new Command<char>.Insert(0, 'b'),
-                new Command<char>.Delete(1)
+                new Edit<char>.Insert(0, 'b'),
+                new Edit<char>.Delete(1)
             ],
             ses);
     }
@@ -114,7 +114,7 @@ public sealed class ComputeSesTests
     {
         var ses = Algorithm.ComputeSes<char>("abc", "abcd");
 
-        Assert.Equal([new Command<char>.Insert(3, 'd')], ses);
+        Assert.Equal([new Edit<char>.Insert(3, 'd')], ses);
     }
 
     [Fact]
@@ -122,7 +122,7 @@ public sealed class ComputeSesTests
     {
         var ses = Algorithm.ComputeSes<char>("abcd", "bcd");
 
-        Assert.Equal([new Command<char>.Delete(1)], ses);
+        Assert.Equal([new Edit<char>.Delete(1)], ses);
     }
 
     [Fact]
@@ -138,8 +138,8 @@ public sealed class ComputeSesTests
 
         Assert.Equal(
             [
-                new Command<char>.Insert(2, 'Y'),
-                new Command<char>.Delete(3)
+                new Edit<char>.Insert(2, 'Y'),
+                new Edit<char>.Delete(3)
             ],
             ses);
     }

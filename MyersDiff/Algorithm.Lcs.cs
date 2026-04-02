@@ -42,43 +42,68 @@ public static partial class Algorithm
             return;
         }
 
-        var (d, x, y, u, v) = FindMiddleSnake(a, b, comparer);
+        // Trim common prefix.
+        var prefix = CommonPrefix(a, b, comparer);
 
-        if (d == 0)
-        {
-            // Sequences are identical — every element is part of the LCS.
-            foreach (var e in a)
-            {
-                lcs.Add(e);
-            }
-
-            return;
-        }
-
-        if (d == 1)
-        {
-            // Exactly one edit (insert or delete). The shorter sequence
-            // is entirely contained as a subsequence of the longer one.
-            var shorter = a.Length < b.Length ? a : b;
-
-            foreach (var e in shorter)
-            {
-                lcs.Add(e);
-            }
-
-            return;
-        }
-
-        // Recurse on the portion before the middle snake.
-        ComputeLcsCore(a[..x], b[..y], comparer, lcs);
-
-        // The middle snake itself is a diagonal — all equal elements.
-        for (var i = x; i < u; i++)
+        for (var i = 0; i < prefix; i++)
         {
             lcs.Add(a[i]);
         }
 
-        // Recurse on the portion after the middle snake.
-        ComputeLcsCore(a[u..], b[v..], comparer, lcs);
+        a = a[prefix..];
+        b = b[prefix..];
+
+        // Trim common suffix.
+        var suffix = CommonSuffix(a, b, comparer);
+        var suffixSpan = a.Slice(a.Length - suffix, suffix);
+
+        a = a[..^suffix];
+        b = b[..^suffix];
+
+        // Process the trimmed middle.
+        if (a.Length > 0 && b.Length > 0)
+        {
+            var (d, x, y, u, v) = FindMiddleSnake(a, b, comparer);
+
+            if (d == 0)
+            {
+                // Sequences are identical — every element is part of the LCS.
+                foreach (var e in a)
+                {
+                    lcs.Add(e);
+                }
+            }
+            else if (d == 1)
+            {
+                // Exactly one edit (insert or delete). The shorter sequence
+                // is entirely contained as a subsequence of the longer one.
+                var shorter = a.Length < b.Length ? a : b;
+
+                foreach (var e in shorter)
+                {
+                    lcs.Add(e);
+                }
+            }
+            else
+            {
+                // Recurse on the portion before the middle snake.
+                ComputeLcsCore(a[..x], b[..y], comparer, lcs);
+
+                // The middle snake itself is a diagonal — all equal elements.
+                for (var i = x; i < u; i++)
+                {
+                    lcs.Add(a[i]);
+                }
+
+                // Recurse on the portion after the middle snake.
+                ComputeLcsCore(a[u..], b[v..], comparer, lcs);
+            }
+        }
+
+        // Append common suffix to LCS.
+        for (var i = 0; i < suffix; i++)
+        {
+            lcs.Add(suffixSpan[i]);
+        }
     }
 }

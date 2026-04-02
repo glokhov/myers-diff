@@ -107,96 +107,113 @@ public static partial class Algorithm
         }
     }
 
-    private static void ComputeDiffCore<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer, List<Diff> edits, int aOffset, int bOffset)
+    private static void ComputeDiffCore<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer, List<Diff> edits, int offsetA, int offsetB)
     {
+        // Trim common prefix.
+        var prefix = CommonPrefix(a, b, comparer);
+
+        for (var i = 0; i < prefix; i++)
+        {
+            edits.Add(new Diff.Equal(offsetA + i + 1, offsetB + i + 1));
+        }
+
+        a = a[prefix..];
+        b = b[prefix..];
+        offsetA += prefix;
+        offsetB += prefix;
+
+        // Trim common suffix.
+        var suffix = CommonSuffix(a, b, comparer);
+        var aLen = a.Length - suffix;
+        var bLen = b.Length - suffix;
+
+        a = a[..aLen];
+        b = b[..bLen];
+
+        // Process the trimmed middle.
         if (a.Length > 0 && b.Length == 0)
         {
             for (var i = 0; i < a.Length; i++)
             {
-                edits.Add(new Diff.Delete(aOffset + i + 1));
+                edits.Add(new Diff.Delete(offsetA + i + 1));
             }
-
-            return;
         }
-
-        if (a.Length == 0 && b.Length > 0)
+        else if (a.Length == 0 && b.Length > 0)
         {
             for (var j = 0; j < b.Length; j++)
             {
-                edits.Add(new Diff.Insert(aOffset, bOffset + j + 1));
+                edits.Add(new Diff.Insert(offsetA, offsetB + j + 1));
             }
-
-            return;
         }
-
-        if (a.Length == 0)
+        else if (a.Length > 0)
         {
-            return;
-        }
+            var (d, x, y, u, v) = FindMiddleSnake(a, b, comparer);
 
-        var (d, x, y, u, v) = FindMiddleSnake(a, b, comparer);
-
-        if (d == 0)
-        {
-            // All elements are equal.
-            for (var i = 0; i < a.Length; i++)
+            if (d == 0)
             {
-                edits.Add(new Diff.Equal(aOffset + i + 1, bOffset + i + 1));
-            }
-
-            return;
-        }
-
-        if (d == 1)
-        {
-            var p = 0;
-            var minLen = Math.Min(a.Length, b.Length);
-
-            while (p < minLen && comparer.Equals(a[p], b[p]))
-            {
-                p++;
-            }
-
-            // Equal prefix.
-            for (var i = 0; i < p; i++)
-            {
-                edits.Add(new Diff.Equal(aOffset + i + 1, bOffset + i + 1));
-            }
-
-            if (a.Length > b.Length)
-            {
-                edits.Add(new Diff.Delete(aOffset + p + 1));
-
-                // Equal suffix: remaining b[p..] matches a[p+1..].
-                for (var i = 0; i < b.Length - p; i++)
+                // All elements are equal.
+                for (var i = 0; i < a.Length; i++)
                 {
-                    edits.Add(new Diff.Equal(aOffset + p + 2 + i, bOffset + p + 1 + i));
+                    edits.Add(new Diff.Equal(offsetA + i + 1, offsetB + i + 1));
+                }
+            }
+            else if (d == 1)
+            {
+                var p = 0;
+                var minLen = Math.Min(a.Length, b.Length);
+
+                while (p < minLen && comparer.Equals(a[p], b[p]))
+                {
+                    p++;
+                }
+
+                // Equal prefix.
+                for (var i = 0; i < p; i++)
+                {
+                    edits.Add(new Diff.Equal(offsetA + i + 1, offsetB + i + 1));
+                }
+
+                if (a.Length > b.Length)
+                {
+                    edits.Add(new Diff.Delete(offsetA + p + 1));
+
+                    // Equal suffix: remaining b[p..] matches a[p+1..].
+                    for (var i = 0; i < b.Length - p; i++)
+                    {
+                        edits.Add(new Diff.Equal(offsetA + p + 2 + i, offsetB + p + 1 + i));
+                    }
+                }
+                else
+                {
+                    edits.Add(new Diff.Insert(offsetA + p, offsetB + p + 1));
+
+                    // Equal suffix: remaining a[p..] matches b[p+1..].
+                    for (var i = 0; i < a.Length - p; i++)
+                    {
+                        edits.Add(new Diff.Equal(offsetA + p + 1 + i, offsetB + p + 2 + i));
+                    }
                 }
             }
             else
             {
-                edits.Add(new Diff.Insert(aOffset + p, bOffset + p + 1));
+                // Recurse on the portion before the middle snake.
+                ComputeDiffCore(a[..x], b[..y], comparer, edits, offsetA, offsetB);
 
-                // Equal suffix: remaining a[p..] matches b[p+1..].
-                for (var i = 0; i < a.Length - p; i++)
+                // Equal elements in the middle snake (diagonal).
+                for (var i = 0; i < u - x; i++)
                 {
-                    edits.Add(new Diff.Equal(aOffset + p + 1 + i, bOffset + p + 2 + i));
+                    edits.Add(new Diff.Equal(offsetA + x + i + 1, offsetB + y + i + 1));
                 }
+
+                // Recurse on the portion after the middle snake.
+                ComputeDiffCore(a[u..], b[v..], comparer, edits, offsetA + u, offsetB + v);
             }
-
-            return;
         }
 
-        // Recurse on the portion before the middle snake.
-        ComputeDiffCore(a[..x], b[..y], comparer, edits, aOffset, bOffset);
-
-        // Equal elements in the middle snake (diagonal).
-        for (var i = 0; i < u - x; i++)
+        // Append common suffix.
+        for (var i = 0; i < suffix; i++)
         {
-            edits.Add(new Diff.Equal(aOffset + x + i + 1, bOffset + y + i + 1));
+            edits.Add(new Diff.Equal(offsetA + aLen + i + 1, offsetB + bLen + i + 1));
         }
-
-        // Recurse on the portion after the middle snake.
-        ComputeDiffCore(a[u..], b[v..], comparer, edits, aOffset + u, bOffset + v);
     }
 }

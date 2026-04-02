@@ -43,7 +43,7 @@ public class Benchmarks
     }
 
     [Benchmark]
-    public List<Command<char>> ComputeSes()
+    public List<Edit<char>> ComputeSes()
     {
         return Algorithm.ComputeSes(_original, _modified, EqualityComparer<char>.Default);
     }

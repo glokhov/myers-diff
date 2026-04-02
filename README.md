@@ -28,7 +28,7 @@ List<char> subsequence = Algorithm.ComputeLcs("abcabba", "cbabac", EqualityCompa
 ## Shortest Edit Script
 
 ```csharp
-List<Command<char>> script = Algorithm.ComputeSes<char>("abcabba", "cbabac");
+List<Edit<char>> script = Algorithm.ComputeSes<char>("abcabba", "cbabac");
 
 // [Insert(0, c), Delete(1), Delete(3), Delete(6), Insert(7, c)]
 
@@ -36,10 +36,10 @@ foreach (var command in script)
 {
     switch (command)
     {
-        case Command<char>.Delete delete:
+        case Edit<char>.Delete delete:
             Console.WriteLine($"Delete at position {delete.Position}");
             break;
-        case Command<char>.Insert insert:
+        case Edit<char>.Insert insert:
             Console.WriteLine($"Insert '{insert.Element}' at position {insert.Position}");
             break;
     }
@@ -49,7 +49,7 @@ foreach (var command in script)
 With an explicit comparer:
 
 ```csharp
-List<Command<char>> script = Algorithm.ComputeSes("abcabba", "cbabac", EqualityComparer<char>.Default);
+List<Edit<char>> script = Algorithm.ComputeSes("abcabba", "cbabac", EqualityComparer<char>.Default);
 
 // [Insert(0, c), Delete(1), Delete(3), Delete(6), Insert(7, c)]
 ```

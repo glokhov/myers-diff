@@ -9,8 +9,8 @@ public static partial class Algorithm
     /// <typeparam name="T">The type of elements in the sequences.</typeparam>
     /// <param name="a">The original sequence.</param>
     /// <param name="b">The modified sequence.</param>
-    /// <returns>A list of <see cref="Command{T}"/> records representing the edit commands.</returns>
-    public static List<Command<T>> ComputeSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b)
+    /// <returns>A list of <see cref="Edit{T}"/> records representing the edit commands.</returns>
+    public static List<Edit<T>> ComputeSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b)
     {
         return ComputeSes(a, b, EqualityComparer<T>.Default);
     }
@@ -23,25 +23,40 @@ public static partial class Algorithm
     /// <param name="a">The original sequence.</param>
     /// <param name="b">The modified sequence.</param>
     /// <param name="comparer">The equality comparer used to compare elements.</param>
-    /// <returns>A list of <see cref="Command{T}"/> records representing the edit commands.</returns>
-    public static List<Command<T>> ComputeSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer)
+    /// <returns>A list of <see cref="Edit{T}"/> records representing the edit commands.</returns>
+    public static List<Edit<T>> ComputeSes<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer)
     {
         ArgumentNullException.ThrowIfNull(comparer);
 
-        var ses = new List<Command<T>>();
+        var ses = new List<Edit<T>>();
 
         ComputeSesCore(a, b, comparer, ses, 0);
 
         return ses;
     }
 
-    private static void ComputeSesCore<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer, List<Command<T>> ses, int offset)
+    private static void ComputeSesCore<T>(ReadOnlySpan<T> a, ReadOnlySpan<T> b, IEqualityComparer<T> comparer, List<Edit<T>> ses, int offset)
     {
+        // Trim common prefix.
+        var prefix = CommonPrefix(a, b, comparer);
+
+        a = a[prefix..];
+        b = b[prefix..];
+
+        offset += prefix;
+
+        // Trim common suffix.
+        var suffix = CommonSuffix(a, b, comparer);
+
+        a = a[..^suffix];
+        b = b[..^suffix];
+
+        // Process the trimmed middle.
         if (a.Length > 0 && b.Length == 0)
         {
             for (var i = 0; i < a.Length; i++)
             {
-                ses.Add(new Command<T>.Delete(offset + i + 1));
+                ses.Add(new Edit<T>.Delete(offset + i + 1));
             }
 
             return;
@@ -51,7 +66,7 @@ public static partial class Algorithm
         {
             foreach (var e in b)
             {
-                ses.Add(new Command<T>.Insert(offset, e));
+                ses.Add(new Edit<T>.Insert(offset, e));
             }
 
             return;
@@ -81,11 +96,11 @@ public static partial class Algorithm
 
             if (a.Length > b.Length)
             {
-                ses.Add(new Command<T>.Delete(offset + p + 1));
+                ses.Add(new Edit<T>.Delete(offset + p + 1));
             }
             else
             {
-                ses.Add(new Command<T>.Insert(offset + p, b[p]));
+                ses.Add(new Edit<T>.Insert(offset + p, b[p]));
             }
 
             return;
