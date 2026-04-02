@@ -38,11 +38,12 @@ public sealed class DiffTests
     [Fact]
     public void PatternMatch_Insert()
     {
-        Diff diff = new Diff.Insert(6);
+        Diff diff = new Diff.Insert(5, 6);
 
         switch (diff)
         {
             case Diff.Insert ins:
+                Assert.Equal(5, ins.X);
                 Assert.Equal(6, ins.Y);
                 break;
             default:

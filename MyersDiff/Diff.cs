@@ -21,6 +21,7 @@ public abstract record Diff
     /// <summary>
     ///  An insertion from the modified sequence.
     /// </summary>
+    /// <param name="X">The position in the original sequence after which this element is inserted (0 = before any element).</param>
     /// <param name="Y">The 1-based position in the modified sequence.</param>
-    public sealed record Insert(int Y) : Diff;
+    public sealed record Insert(int X, int Y) : Diff;
 }

@@ -12,7 +12,7 @@ public sealed class ComputeDiffTests
 
         Assert.Equal(
             [
-                new Diff.Insert(1),
+                new Diff.Insert(0, 1),
                 new Diff.Delete(1),
                 new Diff.Equal(2, 2),
                 new Diff.Delete(3),
@@ -20,7 +20,7 @@ public sealed class ComputeDiffTests
                 new Diff.Equal(5, 4),
                 new Diff.Delete(6),
                 new Diff.Equal(7, 5),
-                new Diff.Insert(6)
+                new Diff.Insert(7, 6)
             ],
             diffs);
     }
@@ -35,14 +35,14 @@ public sealed class ComputeDiffTests
         Assert.Equal(
             [
                 new Diff.Delete(1),
-                new Diff.Insert(1),
+                new Diff.Insert(1, 1),
                 new Diff.Equal(2, 2),
                 new Diff.Delete(3),
                 new Diff.Equal(4, 3),
                 new Diff.Equal(5, 4),
                 new Diff.Delete(6),
                 new Diff.Equal(7, 5),
-                new Diff.Insert(6)
+                new Diff.Insert(7, 6)
             ],
             diffs);
     }
@@ -60,9 +60,9 @@ public sealed class ComputeDiffTests
 
         Assert.Equal(
             [
-                new Diff.Insert(1),
-                new Diff.Insert(2),
-                new Diff.Insert(3)
+                new Diff.Insert(0, 1),
+                new Diff.Insert(0, 2),
+                new Diff.Insert(0, 3)
             ],
             diffs);
     }
@@ -102,9 +102,9 @@ public sealed class ComputeDiffTests
 
         Assert.Equal(
             [
-                new Diff.Insert(1),
-                new Diff.Insert(2),
-                new Diff.Insert(3),
+                new Diff.Insert(0, 1),
+                new Diff.Insert(0, 2),
+                new Diff.Insert(0, 3),
                 new Diff.Delete(1),
                 new Diff.Delete(2),
                 new Diff.Delete(3)
@@ -124,9 +124,9 @@ public sealed class ComputeDiffTests
                 new Diff.Delete(1),
                 new Diff.Delete(2),
                 new Diff.Delete(3),
-                new Diff.Insert(1),
-                new Diff.Insert(2),
-                new Diff.Insert(3)
+                new Diff.Insert(3, 1),
+                new Diff.Insert(3, 2),
+                new Diff.Insert(3, 3)
             ],
             diffs);
     }
@@ -146,7 +146,7 @@ public sealed class ComputeDiffTests
 
         Assert.Equal(
             [
-                new Diff.Insert(1),
+                new Diff.Insert(0, 1),
                 new Diff.Delete(1)
             ],
             diffs);
@@ -162,7 +162,7 @@ public sealed class ComputeDiffTests
         Assert.Equal(
             [
                 new Diff.Delete(1),
-                new Diff.Insert(1)
+                new Diff.Insert(1, 1)
             ],
             diffs);
     }
@@ -177,7 +177,7 @@ public sealed class ComputeDiffTests
                 new Diff.Equal(1, 1),
                 new Diff.Equal(2, 2),
                 new Diff.Equal(3, 3),
-                new Diff.Insert(4)
+                new Diff.Insert(3, 4)
             ],
             diffs);
     }
@@ -220,7 +220,7 @@ public sealed class ComputeDiffTests
             [
                 new Diff.Equal(1, 1),
                 new Diff.Equal(2, 2),
-                new Diff.Insert(3),
+                new Diff.Insert(2, 3),
                 new Diff.Delete(3)
             ],
             diffs);
@@ -238,7 +238,7 @@ public sealed class ComputeDiffTests
                 new Diff.Equal(1, 1),
                 new Diff.Equal(2, 2),
                 new Diff.Delete(3),
-                new Diff.Insert(3)
+                new Diff.Insert(3, 3)
             ],
             diffs);
     }

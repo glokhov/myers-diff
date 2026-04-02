@@ -102,7 +102,7 @@ public static partial class Algorithm
 
             for (var ins = 1; ins <= inserts; ins++)
             {
-                diffs[idx++] = new Diff.Insert(y0 + ins);
+                diffs[idx++] = new Diff.Insert(x0 + deletes, y0 + ins);
             }
         }
     }
@@ -123,7 +123,7 @@ public static partial class Algorithm
         {
             for (var j = 0; j < b.Length; j++)
             {
-                edits.Add(new Diff.Insert(bOffset + j + 1));
+                edits.Add(new Diff.Insert(aOffset, bOffset + j + 1));
             }
 
             return;
@@ -175,7 +175,7 @@ public static partial class Algorithm
             }
             else
             {
-                edits.Add(new Diff.Insert(bOffset + p + 1));
+                edits.Add(new Diff.Insert(aOffset + p, bOffset + p + 1));
 
                 // Equal suffix: remaining a[p..] matches b[p+1..].
                 for (var i = 0; i < a.Length - p; i++)
