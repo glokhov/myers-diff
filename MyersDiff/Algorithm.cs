@@ -18,8 +18,10 @@ public static partial class Algorithm
         var even = delta % 2 == 0;
         var odd = !even;
 
-        var v = new Vector(n + m);
-        var w = new Vector(n + m);
+        var size = max + Math.Abs(delta) + 1;
+
+        var v = new Vector(size);
+        var w = new Vector(size);
 
         v[1] = 0;
         w[delta + 1] = n + 1;
