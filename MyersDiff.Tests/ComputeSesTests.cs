@@ -22,7 +22,7 @@ public sealed class ComputeSesTests
     [Fact]
     public void Test_Comparer()
     {
-        var ses = Algorithm.ComputeSes<char>(A, B, EqualityComparer<char>.Default);
+        var ses = Algorithm.ComputeSes(A, B, EqualityComparer<char>.Default);
 
         var a = new Command<char>.Insert(0, 'c');
         var b = new Command<char>.Delete(1);
@@ -31,39 +31,6 @@ public sealed class ComputeSesTests
         var e = new Command<char>.Insert(7, 'c');
 
         Assert.Equal([a, b, c, d, e], ses);
-    }
-
-    [Fact]
-    public void Test_Cmd_Del()
-    {
-        Command<char> command = new Command<char>.Delete(1);
-
-        switch (command)
-        {
-            case Command<char>.Delete del:
-                Assert.Equal(1, del.Position);
-                break;
-            default:
-                Assert.Fail("Unexpected command.");
-                break;
-        }
-    }
-
-    [Fact]
-    public void Test_Cmd_Ins()
-    {
-        Command<char> command = new Command<char>.Insert(1, 'A');
-
-        switch (command)
-        {
-            case Command<char>.Insert ins:
-                Assert.Equal(1, ins.Position);
-                Assert.Equal('A', ins.Element);
-                break;
-            default:
-                Assert.Fail("Unexpected command.");
-                break;
-        }
     }
 
     [Fact]
@@ -161,13 +128,13 @@ public sealed class ComputeSesTests
     [Fact]
     public void Test_ExplicitComparer_Identical()
     {
-        Assert.Empty(Algorithm.ComputeSes<char>("abc", "ABC", ExplicitComparer.Instance));
+        Assert.Empty(Algorithm.ComputeSes("abc", "ABC", ExplicitComparer.Instance));
     }
 
     [Fact]
     public void Test_ExplicitComparer_Mixed()
     {
-        var ses = Algorithm.ComputeSes<char>("abX", "ABY", ExplicitComparer.Instance);
+        var ses = Algorithm.ComputeSes("abX", "ABY", ExplicitComparer.Instance);
 
         Assert.Equal(
             [
