@@ -2,85 +2,137 @@ namespace MyersDiff.Tests;
 
 public sealed class AlgorithmTests
 {
-    //                        1234567
     private const string A = "abcabba";
     private const string B = "cbabac";
 
+    private static readonly IEqualityComparer<char> Comparer = EqualityComparer<char>.Default;
+
     [Fact]
-    public void Test_GetMiddleSnake()
+    public void Test_FindMiddleSnake()
     {
-        Assert.Equal(new Snake(new Endpoint(3, 2), new Endpoint(5, 4)), Algorithm.GetMiddleSnake(A, B, EqualityComparer<char>.Default));
+        var (d, x, y, u, v) = Algorithm.FindMiddleSnake(A, B, Comparer);
+
+        Assert.True(d > 0);
+        Assert.Equal(u - x, v - y); // diagonal
     }
 
     [Fact]
-    public void Test_ShortestScript()
+    public void Test_FindMiddleSnake_Identical()
     {
-        var path = Algorithm.LcsSes(A, B, EqualityComparer<char>.Default);
+        var (d, x, y, u, v) = Algorithm.FindMiddleSnake("abc", "abc", Comparer);
 
-        // [(0, 0)]
-        // [(0, 1), (1, 0)]
-        // [(2, 4), (2, 2), (3, 1)]
-        // [(3, 6), (4, 5), (5, 4), (5, 2)]
-        // [(3, 7), (4, 6), (5, 5), (7, 5), (7, 3)]
-
-        Assert.Equal(5, path.Length);
-
-        // d=0: k=0 → x=0
-        var s0 = path[0];
-        Assert.True(s0.HasDiagonal(0));
-        Assert.Equal(0, s0[0]);
-
-        // d=1: k=-1 → x=0, k=1 → x=1
-        var s1 = path[1];
-        Assert.True(s1.HasDiagonal(-1));
-        Assert.True(s1.HasDiagonal(1));
-        Assert.Equal(0, s1[-1]);
-        Assert.Equal(1, s1[1]);
-
-        // d=2: k=-2 → x=2, k=0 → x=2, k=2 → x=3
-        var s2 = path[2];
-        Assert.True(s2.HasDiagonal(-2));
-        Assert.True(s2.HasDiagonal(0));
-        Assert.True(s2.HasDiagonal(2));
-        Assert.Equal(2, s2[-2]);
-        Assert.Equal(2, s2[0]);
-        Assert.Equal(3, s2[2]);
-
-        // d=3: k=-3 → x=3, k=-1 → x=4, k=1 → x=5, k=3 → x=5
-        var s3 = path[3];
-        Assert.True(s3.HasDiagonal(-3));
-        Assert.True(s3.HasDiagonal(-1));
-        Assert.True(s3.HasDiagonal(1));
-        Assert.True(s3.HasDiagonal(3));
-        Assert.Equal(3, s3[-3]);
-        Assert.Equal(4, s3[-1]);
-        Assert.Equal(5, s3[1]);
-        Assert.Equal(5, s3[3]);
-
-        // d=4:
-        // k=-4 → x=3, k=-2 → x=4, k=0 → x=5, k=2 → x=7, k=4 → x=7
-        var s4 = path[4];
-        Assert.True(s4.HasDiagonal(-4));
-        Assert.True(s4.HasDiagonal(-2));
-        Assert.True(s4.HasDiagonal(0));
-        Assert.True(s4.HasDiagonal(2));
-        Assert.True(s4.HasDiagonal(4));
-        Assert.Equal(3, s4[-4]);
-        Assert.Equal(4, s4[-2]);
-        Assert.Equal(5, s4[0]);
-        Assert.Equal(7, s4[2]);
-        Assert.Equal(7, s4[4]);
+        Assert.Equal(0, d);
+        Assert.Equal(0, x);
+        Assert.Equal(0, y);
+        Assert.Equal(3, u);
+        Assert.Equal(3, v);
     }
 
     [Fact]
-    public void Test_LcsSes_Empty()
+    public void Test_FindMiddleSnake_SingleCharSame()
     {
-        Assert.Equal(0, Algorithm.LcsSes("", "", EqualityComparer<char>.Default).Length);
+        var (d, x, y, u, v) = Algorithm.FindMiddleSnake("a", "a", Comparer);
+
+        Assert.Equal(0, d);
+        Assert.Equal(0, x);
+        Assert.Equal(0, y);
+        Assert.Equal(1, u);
+        Assert.Equal(1, v);
     }
 
     [Fact]
-    public void Test_LcsSes_ExplicitComparer()
+    public void Test_FindMiddleSnake_SingleCharDifferent()
     {
-        Assert.Equal(0, Algorithm.LcsSes("abc", "ABC", ExplicitComparer.Instance).Length);
+        var (d, _, _, _, _) = Algorithm.FindMiddleSnake("a", "b", Comparer);
+
+        Assert.Equal(2, d);
+    }
+
+    [Fact]
+    public void Test_FindMiddleSnake_Disjoint()
+    {
+        var (d, x, y, u, v) = Algorithm.FindMiddleSnake("abc", "xyz", Comparer);
+
+        Assert.Equal(6, d);
+        Assert.Equal(u - x, v - y);
+    }
+
+    [Fact]
+    public void Test_FindMiddleSnake_Prefix()
+    {
+        var (d, _, _, _, _) = Algorithm.FindMiddleSnake("abc", "abcd", Comparer);
+
+        Assert.Equal(1, d);
+    }
+
+    [Fact]
+    public void Test_FindMiddleSnake_Suffix()
+    {
+        var (d, _, _, _, _) = Algorithm.FindMiddleSnake("abcd", "bcd", Comparer);
+
+        Assert.Equal(1, d);
+    }
+
+    /// <summary>
+    ///  Odd n+m sums with fully disjoint sequences require ⌈(n+m)/2⌉ iterations.
+    ///  These cases directly caught the ceiling-division bug.
+    /// </summary>
+    [Theory]
+    [InlineData("ab", "c", 3)]
+    [InlineData("a", "bc", 3)]
+    [InlineData("abc", "de", 5)]
+    [InlineData("ab", "cde", 5)]
+    [InlineData("abcde", "fg", 7)]
+    [InlineData("ab", "cdefg", 7)]
+    public void Test_FindMiddleSnake_OddSumDisjoint(string a, string b, int expectedD)
+    {
+        var (d, x, y, u, v) = Algorithm.FindMiddleSnake(a, b, Comparer);
+
+        Assert.Equal(expectedD, d);
+        Assert.Equal(u - x, v - y);
+    }
+
+    /// <summary>
+    ///  Verifies the snake diagonal elements actually match in the original sequences.
+    /// </summary>
+    [Theory]
+    [InlineData("abcabba", "cbabac")]
+    [InlineData("axb", "ay")]
+    [InlineData("abxcd", "abyc")]
+    [InlineData("hello world", "hallo welt")]
+    public void Test_FindMiddleSnake_DiagonalElementsMatch(string a, string b)
+    {
+        var (_, x, y, u, v) = Algorithm.FindMiddleSnake(a, b, Comparer);
+
+        var snakeLen = u - x;
+
+        Assert.Equal(snakeLen, v - y);
+
+        for (var i = 0; i < snakeLen; i++)
+        {
+            Assert.Equal(a[x + i], b[y + i]);
+        }
+    }
+
+    /// <summary>
+    ///  Verifies snake coordinates are within bounds.
+    /// </summary>
+    [Theory]
+    [InlineData("abcabba", "cbabac")]
+    [InlineData("a", "b")]
+    [InlineData("abc", "xyz")]
+    [InlineData("ab", "c")]
+    [InlineData("a", "bc")]
+    [InlineData("abc", "abcd")]
+    [InlineData("abcd", "bcd")]
+    public void Test_FindMiddleSnake_BoundsValid(string a, string b)
+    {
+        var (d, x, y, u, v) = Algorithm.FindMiddleSnake(a, b, Comparer);
+
+        Assert.True(d >= 0);
+        Assert.True(x >= 0 && x <= a.Length);
+        Assert.True(y >= 0 && y <= b.Length);
+        Assert.True(u >= x && u <= a.Length);
+        Assert.True(v >= y && v <= b.Length);
     }
 }

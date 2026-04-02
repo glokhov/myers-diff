@@ -1,44 +1,45 @@
 # Myers' difference algorithm [![Nuget Version](https://img.shields.io/nuget/v/MyersDiff)](https://www.nuget.org/packages/MyersDiff)
 
-A C# implementation of [Eugene Myers' O(ND) difference algorithm](https://publications.mpi-cbg.de/Myers_1986_6330.pdf) for computing the **Longest Common Subsequence (LCS)** and **Shortest Edit Script (SES)** between two sequences.
+A C# implementation of [Eugene Myers' O(ND) difference algorithm](https://publications.mpi-cbg.de/Myers_1986_6330.pdf) for computing the **Longest Common Subsequence (LCS)**, **Shortest Edit Script (SES)**, and **full diff** between two sequences.
 
 ## Features
 
 - Generic — works with any element type via `ReadOnlySpan<T>`
 - Custom equality comparers via `IEqualityComparer<T>`
+- Linear-space divide-and-conquer implementation
 - Zero external dependencies
 
 ## Longest Common Subsequence
 
 ```csharp
-List<char> subsequence = Lcs<char>.Build("abcabba", "cbabac");
+List<char> subsequence = Algorithm.ComputeLcs<char>("abcabba", "cbabac");
 
-// ['c', 'a', 'b', 'a']
+// ['b', 'a', 'b', 'a']
 ```
 
 With an explicit comparer:
 
 ```csharp
-List<char> subsequence = Lcs<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
+List<char> subsequence = Algorithm.ComputeLcs("abcabba", "cbabac", EqualityComparer<char>.Default);
 
-// ['c', 'a', 'b', 'a']
+// ['b', 'a', 'b', 'a']
 ```
 
 ## Shortest Edit Script
 
 ```csharp
-List<Ses<char>.Command> script = Ses<char>.Build("abcabba", "cbabac");
+List<Command<char>> script = Algorithm.ComputeSes<char>("abcabba", "cbabac");
 
-// [Delete(1), Delete(2), Insert(3, 'b'), Delete(6), Insert(7, 'c')]
+// [Insert(0, c), Delete(1), Delete(3), Delete(6), Insert(7, c)]
 
 foreach (var command in script)
 {
     switch (command)
     {
-        case Ses<char>.Command.Delete delete:
+        case Command<char>.Delete delete:
             Console.WriteLine($"Delete at position {delete.Position}");
             break;
-        case Ses<char>.Command.Insert insert:
+        case Command<char>.Insert insert:
             Console.WriteLine($"Insert '{insert.Element}' at position {insert.Position}");
             break;
     }
@@ -48,45 +49,41 @@ foreach (var command in script)
 With an explicit comparer:
 
 ```csharp
-List<Ses<char>.Command> script = Ses<char>.Build("abcabba", "cbabac", EqualityComparer<char>.Default);
+List<Command<char>> script = Algorithm.ComputeSes("abcabba", "cbabac", EqualityComparer<char>.Default);
 
-// [Delete(1), Delete(2), Insert(3, 'b'), Delete(6), Insert(7, 'c')]
+// [Insert(0, c), Delete(1), Delete(3), Delete(6), Insert(7, c)]
 ```
 
-## Custom Trace Logic
-
-The `Path`, `Vector`, and `Trace` types are public, so you can call `Algorithm.LcsSes` directly and implement your own trace logic on top of the recorded snapshots.
-
-For example, building a unified diff-style output:
+## Diff
 
 ```csharp
 string a = "abcabba";
 string b = "cbabac";
 
-var path = Algorithm.LcsSes(a, b, EqualityComparer<char>.Default);
+List<Diff> diffs = Algorithm.ComputeDiff<char>(a, b);
 
-var operation = Trace.Operation.Delete | Trace.Operation.Insert | Trace.Operation.Equal;
+Algorithm.ReorderDeletesBeforeInserts(diffs);
 
-foreach (var edit in Trace.GetEdits(path, operation))
+foreach (var diff in diffs)
 {
-    switch (edit.Operation)
+    switch (diff)
     {
-        case Trace.Operation.Delete:
-            Console.WriteLine($"- {a[edit.X - 1]}");
+        case Diff.Delete del:
+            Console.WriteLine($"- {a[del.X - 1]}");
             break;
-        case Trace.Operation.Insert:
-            Console.WriteLine($"+ {b[edit.Y - 1]}");
+        case Diff.Insert ins:
+            Console.WriteLine($"+ {b[ins.Y - 1]}");
             break;
-        case Trace.Operation.Equal:
-            Console.WriteLine($"  {a[edit.X - 1]}");
+        case Diff.Equal eq:
+            Console.WriteLine($"  {a[eq.X - 1]}");
             break;
     }
 }
 
 // - a
-// - b
-//   c
-// + b
+// + c
+//   b
+// - c
 //   a
 //   b
 // - b
@@ -94,9 +91,21 @@ foreach (var edit in Trace.GetEdits(path, operation))
 // + c
 ```
 
-## Limitations
+With an explicit comparer:
 
-The linear-space refinement (divide-and-conquer) described in the original paper is not yet implemented. The current implementation stores the full snapshot history during the forward pass. This is planned for a future release.
+```csharp
+List<Diff> diffs = Algorithm.ComputeDiff("abcabba", "cbabac", EqualityComparer<char>.Default);
+```
+
+### Reordering deletions before insertions
+
+By default, within each non-equal block the algorithm emits insertions before deletions. Call `Algorithm.ReorderDeletesBeforeInserts` to flip the order so that all deletions appear first — useful when rendering traditional unified diffs where `-` lines precede `+` lines.
+
+```csharp
+List<Diff> diffs = Algorithm.ComputeDiff<char>(a, b);
+
+Algorithm.ReorderDeletesBeforeInserts(diffs);
+```
 
 ## References
 

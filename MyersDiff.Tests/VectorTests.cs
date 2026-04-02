@@ -29,9 +29,6 @@ public sealed class VectorTests
 
         var copy = vector.Copy(0);
 
-        Assert.False(copy.HasDiagonal(-1));
-        Assert.True(copy.HasDiagonal(0));
-        Assert.False(copy.HasDiagonal(1));
         Assert.Equal(2, copy[0]);
     }
 
@@ -51,9 +48,6 @@ public sealed class VectorTests
 
         var copy = vector.Copy(1);
 
-        Assert.True(copy.HasDiagonal(-1));
-        Assert.False(copy.HasDiagonal(0));
-        Assert.True(copy.HasDiagonal(1));
         Assert.Equal(3, copy[-1]);
         Assert.Equal(5, copy[1]);
     }
@@ -74,11 +68,6 @@ public sealed class VectorTests
 
         var copy = vector.Copy(2);
 
-        Assert.True(copy.HasDiagonal(-2));
-        Assert.False(copy.HasDiagonal(-1));
-        Assert.True(copy.HasDiagonal(0));
-        Assert.False(copy.HasDiagonal(1));
-        Assert.True(copy.HasDiagonal(2));
         Assert.Equal(2, copy[-2]);
         Assert.Equal(4, copy[0]);
         Assert.Equal(6, copy[2]);

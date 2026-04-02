@@ -3,7 +3,7 @@ using BenchmarkDotNet.Attributes;
 namespace MyersDiff.Benchmarks;
 
 [MemoryDiagnoser]
-public class LcsBenchmarks
+public class Benchmarks
 {
     private char[] _original = [];
     private char[] _modified = [];
@@ -31,8 +31,20 @@ public class LcsBenchmarks
     }
 
     [Benchmark]
-    public List<char> Build()
+    public List<Diff> ComputeDiff()
     {
-        return Lcs<char>.Build(_original, _modified, EqualityComparer<char>.Default);
+        return Algorithm.ComputeDiff(_original, _modified, EqualityComparer<char>.Default);
+    }
+
+    [Benchmark]
+    public List<char> ComputeLcs()
+    {
+        return Algorithm.ComputeLcs(_original, _modified, EqualityComparer<char>.Default);
+    }
+
+    [Benchmark]
+    public List<Command<char>> ComputeSes()
+    {
+        return Algorithm.ComputeSes(_original, _modified, EqualityComparer<char>.Default);
     }
 }
